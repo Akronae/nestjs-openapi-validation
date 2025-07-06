@@ -1,0 +1,7 @@
+/* eslint-disable */
+export default async () => {
+    const t = {
+        ["./modules/app/app.dto"]: await import("./modules/app/app.dto")
+    };
+    return { "@nestjs/swagger": { "models": [[import("./modules/app/app.dto"), { "Query1": { str1: { required: true, type: () => String }, str2: { required: false, type: () => String }, date: { required: true, type: () => Date }, nbr1: { required: true, type: () => Number }, nbr2: { required: false, type: () => Number } }, "Query2": { str1: { required: true, type: () => String }, nbr1: { required: true, type: () => Number }, enum1: { required: true, type: () => Object } }, "Query3": { enum1: { required: true, type: () => Object }, enum2: { required: true, type: () => Object } }, "Query4": { query1: { required: true, type: () => t["./modules/app/app.dto"].Query1 }, field2: { required: true, type: () => Object } } }]], "controllers": [[import("./modules/app/app.controller"), { "AppController": { "getStatus": {}, "getStatusV2": { type: String }, "getQuery1": { type: t["./modules/app/app.dto"].Query1 }, "getQuery2": { type: t["./modules/app/app.dto"].Query2 }, "getQuery3": { type: t["./modules/app/app.dto"].Query3 }, "getQuery4": { type: t["./modules/app/app.dto"].Query4 } } }]] } };
+};

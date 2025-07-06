@@ -1,0 +1,246 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`AppController (e2e) /query_1 fail (GET) 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "required",
+      "path": [
+        "str1",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "required",
+      "path": [
+        "date",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received nan",
+      "path": [
+        "nbr1",
+      ],
+      "received": "nan",
+    },
+  ],
+  "name": "ZodError",
+}
+`;
+
+exports[`AppController (e2e) /query_1 success (GET) 1`] = `
+{
+  "date": "2025",
+  "nbr1": 123,
+  "str1": "lala",
+}
+`;
+
+exports[`AppController (e2e) /query_2 fail (GET) 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received nan",
+      "path": [
+        "nbr1",
+      ],
+      "received": "nan",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "'A' | 'B' | 'C'",
+      "message": "Required",
+      "path": [
+        "enum1",
+      ],
+      "received": "undefined",
+    },
+  ],
+  "name": "ZodError",
+}
+`;
+
+exports[`AppController (e2e) /query_2 success (GET) 1`] = `
+{
+  "enum1": "A",
+  "nbr1": 123,
+  "str1": "lala",
+}
+`;
+
+exports[`AppController (e2e) /query_3 fail (GET) 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_union",
+      "message": "Invalid input",
+      "path": [
+        "enum1",
+      ],
+      "unionErrors": [
+        {
+          "issues": [
+            {
+              "code": "invalid_type",
+              "expected": "'A' | 'B' | 'C'",
+              "message": "Required",
+              "path": [
+                "enum1",
+              ],
+              "received": "undefined",
+            },
+          ],
+          "name": "ZodError",
+        },
+        {
+          "issues": [
+            {
+              "code": "invalid_type",
+              "expected": "'AA' | 'BB' | 'CC'",
+              "message": "Required",
+              "path": [
+                "enum1",
+              ],
+              "received": "undefined",
+            },
+          ],
+          "name": "ZodError",
+        },
+      ],
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "required",
+      "path": [
+        "enum2",
+      ],
+      "received": "undefined",
+    },
+  ],
+  "name": "ZodError",
+}
+`;
+
+exports[`AppController (e2e) /query_3 success (GET) 1`] = `
+{
+  "enum1": "BB",
+  "enum2": "okok",
+}
+`;
+
+exports[`AppController (e2e) /query_4 fail (GET) 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "required",
+      "path": [
+        "query1",
+        "str1",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "required",
+      "path": [
+        "query1",
+        "date",
+      ],
+      "received": "undefined",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received nan",
+      "path": [
+        "query1",
+        "nbr1",
+      ],
+      "received": "nan",
+    },
+    {
+      "code": "invalid_union",
+      "message": "Invalid input",
+      "path": [
+        "field2",
+      ],
+      "unionErrors": [
+        {
+          "issues": [
+            {
+              "code": "invalid_type",
+              "expected": "object",
+              "message": "Required",
+              "path": [
+                "field2",
+              ],
+              "received": "undefined",
+            },
+          ],
+          "name": "ZodError",
+        },
+        {
+          "issues": [
+            {
+              "code": "invalid_type",
+              "expected": "object",
+              "message": "Required",
+              "path": [
+                "field2",
+              ],
+              "received": "undefined",
+            },
+          ],
+          "name": "ZodError",
+        },
+      ],
+    },
+  ],
+  "name": "ZodError",
+}
+`;
+
+exports[`AppController (e2e) /query_4 success (GET) 1`] = `
+{
+  "field2": {
+    "enum1": "A",
+    "enum2": "okok",
+  },
+  "query1": {
+    "date": "2025-05-02",
+    "nbr1": 99,
+    "str1": "ahah",
+  },
+}
+`;
+
+exports[`AppController (e2e) /query_5 success (GET) 1`] = `
+{
+  "force": "false",
+  "query4": {
+    "field2": {
+      "enum1": "A",
+      "enum2": "okok",
+      "str1": "!!!",
+    },
+    "query1": {
+      "date": "2025-05-02",
+      "nbr1": "99",
+      "str1": "ahah",
+    },
+  },
+}
+`;
