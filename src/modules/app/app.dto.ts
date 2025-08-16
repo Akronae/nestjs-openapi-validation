@@ -55,3 +55,7 @@ export class Query5 {
   force: boolean;
   query1?: Query1;
 }
+
+export class Query6 {
+  arr: Query4[];
+}

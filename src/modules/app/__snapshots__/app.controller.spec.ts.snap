@@ -13,13 +13,11 @@ exports[`AppController (e2e) /query_1 fail (GET) 1`] = `
       "received": "undefined",
     },
     {
-      "code": "invalid_type",
-      "expected": "string",
-      "message": "required",
+      "code": "invalid_date",
+      "message": "Invalid date",
       "path": [
         "date",
       ],
-      "received": "undefined",
     },
     {
       "code": "invalid_type",
@@ -37,7 +35,7 @@ exports[`AppController (e2e) /query_1 fail (GET) 1`] = `
 
 exports[`AppController (e2e) /query_1 success (GET) 1`] = `
 {
-  "date": "2025",
+  "date": "2025-01-01T00:00:00.000Z",
   "nbr1": 123,
   "str1": "lala",
 }
@@ -152,14 +150,12 @@ exports[`AppController (e2e) /query_4 fail (GET) 1`] = `
       "received": "undefined",
     },
     {
-      "code": "invalid_type",
-      "expected": "string",
-      "message": "required",
+      "code": "invalid_date",
+      "message": "Invalid date",
       "path": [
         "query1",
         "date",
       ],
-      "received": "undefined",
     },
     {
       "code": "invalid_type",
@@ -220,27 +216,293 @@ exports[`AppController (e2e) /query_4 success (GET) 1`] = `
     "enum2": "okok",
   },
   "query1": {
-    "date": "2025-05-02",
+    "date": "2025-05-02T00:00:00.000Z",
     "nbr1": 99,
     "str1": "ahah",
   },
 }
 `;
 
-exports[`AppController (e2e) /query_5 success (GET) 1`] = `
+exports[`AppController (e2e) /query_5 fail (POST) 1`] = `
 {
-  "force": "false",
+  "issues": [
+    {
+      "code": "invalid_date",
+      "message": "Invalid date",
+      "path": [
+        "query4",
+        "query1",
+        "date",
+      ],
+    },
+    {
+      "code": "invalid_union",
+      "message": "Invalid input",
+      "path": [
+        "query4",
+        "field2",
+      ],
+      "unionErrors": [
+        {
+          "issues": [
+            {
+              "code": "invalid_type",
+              "expected": "number",
+              "message": "Expected number, received nan",
+              "path": [
+                "query4",
+                "field2",
+                "nbr1",
+              ],
+              "received": "nan",
+            },
+            {
+              "code": "invalid_enum_value",
+              "message": "Invalid enum value. Expected 'A' | 'B' | 'C', received 'D'",
+              "options": [
+                "A",
+                "B",
+                "C",
+              ],
+              "path": [
+                "query4",
+                "field2",
+                "enum1",
+              ],
+              "received": "D",
+            },
+          ],
+          "name": "ZodError",
+        },
+        {
+          "issues": [
+            {
+              "code": "invalid_union",
+              "message": "Invalid input",
+              "path": [
+                "query4",
+                "field2",
+                "enum1",
+              ],
+              "unionErrors": [
+                {
+                  "issues": [
+                    {
+                      "code": "invalid_enum_value",
+                      "message": "Invalid enum value. Expected 'A' | 'B' | 'C', received 'D'",
+                      "options": [
+                        "A",
+                        "B",
+                        "C",
+                      ],
+                      "path": [
+                        "query4",
+                        "field2",
+                        "enum1",
+                      ],
+                      "received": "D",
+                    },
+                  ],
+                  "name": "ZodError",
+                },
+                {
+                  "issues": [
+                    {
+                      "code": "invalid_enum_value",
+                      "message": "Invalid enum value. Expected 'AA' | 'BB' | 'CC', received 'D'",
+                      "options": [
+                        "AA",
+                        "BB",
+                        "CC",
+                      ],
+                      "path": [
+                        "query4",
+                        "field2",
+                        "enum1",
+                      ],
+                      "received": "D",
+                    },
+                  ],
+                  "name": "ZodError",
+                },
+              ],
+            },
+          ],
+          "name": "ZodError",
+        },
+      ],
+    },
+  ],
+  "name": "ZodError",
+}
+`;
+
+exports[`AppController (e2e) /query_5 success (POST) 1`] = `
+{
+  "force": false,
   "query4": {
     "field2": {
       "enum1": "A",
       "enum2": "okok",
-      "str1": "!!!",
     },
     "query1": {
-      "date": "2025-05-02",
-      "nbr1": "99",
+      "date": "2025-05-02T00:00:00.000Z",
+      "nbr1": 99,
       "str1": "ahah",
     },
   },
+}
+`;
+
+exports[`AppController (e2e) /query_6 fail (POST) 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_union",
+      "message": "Invalid input",
+      "path": [
+        "arr",
+        1,
+        "field2",
+      ],
+      "unionErrors": [
+        {
+          "issues": [
+            {
+              "code": "invalid_type",
+              "expected": "string",
+              "message": "required",
+              "path": [
+                "arr",
+                1,
+                "field2",
+                "str1",
+              ],
+              "received": "undefined",
+            },
+            {
+              "code": "invalid_type",
+              "expected": "number",
+              "message": "Expected number, received nan",
+              "path": [
+                "arr",
+                1,
+                "field2",
+                "nbr1",
+              ],
+              "received": "nan",
+            },
+            {
+              "code": "invalid_enum_value",
+              "message": "Invalid enum value. Expected 'A' | 'B' | 'C', received 'AAA'",
+              "options": [
+                "A",
+                "B",
+                "C",
+              ],
+              "path": [
+                "arr",
+                1,
+                "field2",
+                "enum1",
+              ],
+              "received": "AAA",
+            },
+          ],
+          "name": "ZodError",
+        },
+        {
+          "issues": [
+            {
+              "code": "invalid_union",
+              "message": "Invalid input",
+              "path": [
+                "arr",
+                1,
+                "field2",
+                "enum1",
+              ],
+              "unionErrors": [
+                {
+                  "issues": [
+                    {
+                      "code": "invalid_enum_value",
+                      "message": "Invalid enum value. Expected 'A' | 'B' | 'C', received 'AAA'",
+                      "options": [
+                        "A",
+                        "B",
+                        "C",
+                      ],
+                      "path": [
+                        "arr",
+                        1,
+                        "field2",
+                        "enum1",
+                      ],
+                      "received": "AAA",
+                    },
+                  ],
+                  "name": "ZodError",
+                },
+                {
+                  "issues": [
+                    {
+                      "code": "invalid_enum_value",
+                      "message": "Invalid enum value. Expected 'AA' | 'BB' | 'CC', received 'AAA'",
+                      "options": [
+                        "AA",
+                        "BB",
+                        "CC",
+                      ],
+                      "path": [
+                        "arr",
+                        1,
+                        "field2",
+                        "enum1",
+                      ],
+                      "received": "AAA",
+                    },
+                  ],
+                  "name": "ZodError",
+                },
+              ],
+            },
+          ],
+          "name": "ZodError",
+        },
+      ],
+    },
+  ],
+  "name": "ZodError",
+}
+`;
+
+exports[`AppController (e2e) /query_6 success (POST) 1`] = `
+{
+  "arr": [
+    {
+      "field2": {
+        "enum1": "A",
+        "nbr1": 123,
+        "str1": "lala",
+      },
+      "query1": {
+        "date": "2025-05-02T00:00:00.000Z",
+        "nbr1": 999,
+        "str1": "lalala",
+      },
+    },
+    {
+      "field2": {
+        "enum1": "AA",
+        "enum2": "Aahah",
+      },
+      "query1": {
+        "date": "2025-10-02T00:00:00.000Z",
+        "nbr1": 111,
+        "str1": "lalala",
+      },
+    },
+  ],
 }
 `;

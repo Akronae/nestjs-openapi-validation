@@ -1,5 +1,5 @@
-import { Controller, Get, Query, Version } from '@nestjs/common';
-import { Query1, Query2, Query3, Query4, Query5 } from './app.dto';
+import { Body, Controller, Get, Post, Query, Version } from '@nestjs/common';
+import { Query1, Query2, Query3, Query4, Query5, Query6 } from './app.dto';
 import { AppService } from './app.service';
 
 @Controller({
@@ -39,8 +39,14 @@ export class AppController {
     return query;
   }
 
-  @Get('query_5')
-  getQuery5(@Query() query: Query5) {
+  @Post('query_5')
+  getQuery5(@Body() query: Query5) {
+    return query;
+  }
+
+  @Post('query_6')
+  getQuery6(@Body() query: Query6) {
+    console.log(query);
     return query;
   }
 }

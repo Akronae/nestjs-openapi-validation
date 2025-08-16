@@ -7,6 +7,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import metadata from '../../../src/metadata';
+import { Query6 } from './app.dto';
 import { AppModule } from './app.module';
 import { AppService } from './app.service';
 import { MetadataValidationPipe } from './openapi-validation.pipe';
@@ -129,10 +130,10 @@ describe('AppController (e2e)', () => {
     expect(res.body).toMatchSnapshot();
   });
 
-  it('/query_5 success (GET)', async () => {
+  it('/query_5 success (POST)', async () => {
     const res = await request(app.getHttpServer())
-      .get('/v1/query_5')
-      .query({
+      .post('/v1/query_5')
+      .send({
         query4: {
           query1: {
             str1: 'ahah',
@@ -147,7 +148,69 @@ describe('AppController (e2e)', () => {
         },
         force: false,
       });
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/query_5 fail (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/query_5')
+      .send({
+        query4: {
+          query1: {
+            str1: 'ahah',
+            date: '2025-05-aa',
+            nbr1: '99',
+          },
+          field2: {
+            str1: '!!!',
+            enum2: 'okok',
+            enum1: 'D',
+          },
+        },
+        force: true,
+      });
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/query_6 success (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/query_6')
+      .send({
+        arr: [
+          {
+            field2: { enum1: 'A', str1: 'lala', nbr1: 123 },
+            query1: { str1: 'lalala', date: new Date('2025-05-02'), nbr1: 999 },
+          },
+          {
+            field2: { enum1: 'AA', enum2: 'Aahah' },
+            query1: { str1: 'lalala', date: new Date('2025-10-02'), nbr1: 111 },
+          },
+        ],
+      } satisfies Query6);
+    console.log(JSON.stringify(res.body, null, 2));
+
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/query_6 fail (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/query_6')
+      .send({
+        arr: [
+          {
+            field2: { enum1: 'A', str1: 'lala', nbr1: 123 },
+            query1: { str1: 'lalala', date: new Date('2025-05-02'), nbr1: 999 },
+          },
+          {
+            field2: { enum1: 'AAA', enum2: 'A' },
+            query1: { str1: 'lalala', date: new Date('2025-10-02'), nbr1: 111 },
+          },
+        ],
+      });
+    expect(res.status).toBe(400);
     expect(res.body).toMatchSnapshot();
   });
 });

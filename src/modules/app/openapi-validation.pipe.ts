@@ -6,13 +6,15 @@ import {
 } from '@nestjs/common';
 import { OpenAPIObject } from '@nestjs/swagger';
 import { mapEntries } from 'radash';
-import { z, ZodType } from 'zod';
+import z, { ZodType } from 'zod';
 
 type OpenApiProp = {
   type?: string;
   enum?: [string, ...string[]];
   oneOf?: [OpenApiProp, OpenApiProp, ...OpenApiProp[]];
   $ref?: string;
+  items?: OpenApiProp;
+  format?: string;
 };
 
 @Injectable()
@@ -22,7 +24,7 @@ export class MetadataValidationPipe implements PipeTransform {
     Record<
       string,
       {
-        type: () => { name: string };
+        type: () => { name: string } | { name: string }[];
         required: boolean;
       }
     >
@@ -37,7 +39,10 @@ export class MetadataValidationPipe implements PipeTransform {
               string,
               Record<
                 string,
-                { type: () => { name: string }; required: boolean }
+                {
+                  type: () => { name: string } | { name: string }[];
+                  required: boolean;
+                }
               >
             >
         )[][];
@@ -73,7 +78,6 @@ export class MetadataValidationPipe implements PipeTransform {
   getZodSchema(dtoName: string) {
     const tsschema = this.schemaMap[dtoName];
     const openapischema = this.openapi.components?.schemas[dtoName];
-    // z.object({ a: z.coerce.().describe });
 
     const zodSchema = z.object({
       ...mapEntries(tsschema, (k, v) => {
@@ -103,18 +107,23 @@ export class MetadataValidationPipe implements PipeTransform {
       );
     }
 
+    let val: ZodType;
+    let type: string;
+
     if (prop.$ref) {
       const dtoname = prop.$ref.split('/').pop();
-      return this.getZodSchema(dtoname);
+      val = this.getZodSchema(dtoname);
+      type = dtoname;
+    } else {
+      type = prop.format?.includes('date') ? 'date' : prop.type;
+      val = prop.enum
+        ? z.enum(prop.enum)
+        : type in z.coerce
+          ? z.coerce[type]()
+          : type == 'array'
+            ? z.array(this.openapiPropToZod(prop.items, opts))
+            : null;
     }
-
-    const type = prop.type;
-
-    let val = prop.enum
-      ? z.enum(prop.enum)
-      : type in z.coerce
-        ? z.coerce[type]()
-        : null;
 
     if (!val) {
       return null;
@@ -128,7 +137,7 @@ export class MetadataValidationPipe implements PipeTransform {
 
 const requiredrefine = (x: any, type: string) =>
   x.superRefine((data, ctx) => {
-    if (data == null || data == '' || data == 'undefined') {
+    if (data == null || data == 'undefined') {
       ctx.addIssue({
         code: z.ZodIssueCode.invalid_type,
         expected: type,
