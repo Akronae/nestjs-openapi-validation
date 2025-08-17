@@ -1,6 +1,6 @@
 {
   "name": "nestjs-openapi-validation",
-  "description": "OpenAPI validation for NestJS",
+  "description": "✅ OpenAPI validation for NestJS",
   "version": "0.1.0",
   "license": "MIT",
   "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610",
@@ -24,11 +24,11 @@
     "v:patch": "npm version patch -m \"chore: bump patch to %s\""
   },
   "dependencies": {
-    "@scalar/nestjs-api-reference": "^0.5.12",
     "radash": "^12.1.1",
     "zod": "^3.25.74"
   },
   "devDependencies": {
+    "@scalar/nestjs-api-reference": "^0.5.12",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",

@@ -2,7 +2,7 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { apiReference } from '@scalar/nestjs-api-reference';
-import { MetadataValidationPipe } from './lib/openapi-validation.pipe';
+import { OpenApiValidationPipe } from './lib/openapi-validation.pipe';
 import metadata from './metadata';
 import { AppModule } from './modules/app/app.module';
 
@@ -45,7 +45,7 @@ async function bootstrap() {
   );
 
   app.useGlobalPipes(
-    new MetadataValidationPipe(metadata, document),
+    new OpenApiValidationPipe(metadata, document),
     new ValidationPipe({
       transform: true,
       transformOptions: { enableImplicitConversion: true },

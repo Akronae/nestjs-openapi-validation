@@ -7,7 +7,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import metadata from '../../../src/metadata';
-import { MetadataValidationPipe } from '../../lib/openapi-validation.pipe';
+import { OpenApiValidationPipe } from '../../lib/openapi-validation.pipe';
 import { Query6, Query7 } from './app.dto';
 import { AppModule } from './app.module';
 import { AppService } from './app.service';
@@ -38,7 +38,7 @@ describe('AppController (e2e)', () => {
     SwaggerModule.setup('api', app, document);
 
     app.useGlobalPipes(
-      new MetadataValidationPipe(metadata, document),
+      new OpenApiValidationPipe(metadata, document),
       new ValidationPipe({
         transform: true,
         transformOptions: { enableImplicitConversion: true },

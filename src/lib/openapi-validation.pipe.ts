@@ -23,7 +23,7 @@ type OpenApiProp = {
 };
 
 @Injectable()
-export class MetadataValidationPipe implements PipeTransform {
+export class OpenApiValidationPipe implements PipeTransform {
   private schemaMap: Record<
     string,
     Record<
