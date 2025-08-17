@@ -15,6 +15,11 @@ type OpenApiProp = {
   $ref?: string;
   items?: OpenApiProp;
   format?: string;
+  minimum?: number;
+  maximum?: number;
+  minLength?: number;
+  maxLength?: number;
+  pattern?: string;
 };
 
 @Injectable()
@@ -115,7 +120,7 @@ export class MetadataValidationPipe implements PipeTransform {
       val = this.getZodSchema(dtoname);
       type = dtoname;
     } else {
-      type = prop.format?.includes('date') ? 'date' : prop.type;
+      type = prop.type;
       val = prop.enum
         ? z.enum(prop.enum)
         : type in z.coerce
@@ -123,6 +128,35 @@ export class MetadataValidationPipe implements PipeTransform {
           : type == 'array'
             ? z.array(this.openapiPropToZod(prop.items, opts))
             : null;
+
+      if (prop.format) {
+        let format = prop.format;
+        if (format == 'date-time') format = 'datetime';
+
+        if (val[format]) {
+          val = val[format]();
+        }
+      }
+
+      if (prop.minimum && val['min']) {
+        val = val['min'](prop.minimum);
+      }
+
+      if (prop.maximum && val['max']) {
+        val = val['max'](prop.maximum);
+      }
+
+      if (prop.minLength && val['min']) {
+        val = val['min'](prop.minLength);
+      }
+
+      if (prop.maxLength && val['max']) {
+        val = val['max'](prop.maxLength);
+      }
+
+      if (prop.pattern && val['regex']) {
+        val = val['regex'](new RegExp(prop.pattern));
+      }
     }
 
     if (!val) {

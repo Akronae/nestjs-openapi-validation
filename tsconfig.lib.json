@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ESNext",
+    "esModuleInterop": true,
+    "declaration": true,
+    "outDir": "./dist",
+    "allowJs": false,
+    "strict": false,
+    "baseUrl": "./",
+    "rootDir": "./",
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    },
+  },
+  "include": [
+    "src/lib/**/*",
+    "scripts/**/*",
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+  ],
+  "tsc-alias": {
+    "resolveFullPaths": true
+  }
+}

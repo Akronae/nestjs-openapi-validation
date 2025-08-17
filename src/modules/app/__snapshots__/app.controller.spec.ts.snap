@@ -13,11 +13,21 @@ exports[`AppController (e2e) /query_1 fail (GET) 1`] = `
       "received": "undefined",
     },
     {
-      "code": "invalid_date",
-      "message": "Invalid date",
+      "code": "invalid_string",
+      "message": "Invalid datetime",
       "path": [
         "date",
       ],
+      "validation": "datetime",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "required",
+      "path": [
+        "date",
+      ],
+      "received": "undefined",
     },
     {
       "code": "invalid_type",
@@ -150,12 +160,23 @@ exports[`AppController (e2e) /query_4 fail (GET) 1`] = `
       "received": "undefined",
     },
     {
-      "code": "invalid_date",
-      "message": "Invalid date",
+      "code": "invalid_string",
+      "message": "Invalid datetime",
       "path": [
         "query1",
         "date",
       ],
+      "validation": "datetime",
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "message": "required",
+      "path": [
+        "query1",
+        "date",
+      ],
+      "received": "undefined",
     },
     {
       "code": "invalid_type",
@@ -227,13 +248,14 @@ exports[`AppController (e2e) /query_5 fail (POST) 1`] = `
 {
   "issues": [
     {
-      "code": "invalid_date",
-      "message": "Invalid date",
+      "code": "invalid_string",
+      "message": "Invalid datetime",
       "path": [
         "query4",
         "query1",
         "date",
       ],
+      "validation": "datetime",
     },
     {
       "code": "invalid_union",
@@ -504,5 +526,88 @@ exports[`AppController (e2e) /query_6 success (POST) 1`] = `
       },
     },
   ],
+}
+`;
+
+exports[`AppController (e2e) /query_7 fail (POST) 1`] = `
+{
+  "issues": [
+    {
+      "code": "too_small",
+      "exact": false,
+      "inclusive": true,
+      "message": "Number must be greater than or equal to -3",
+      "minimum": -3,
+      "path": [
+        "nbr",
+      ],
+      "type": "number",
+    },
+    {
+      "code": "invalid_string",
+      "message": "Invalid email",
+      "path": [
+        "email",
+      ],
+      "validation": "email",
+    },
+    {
+      "code": "invalid_string",
+      "message": "Invalid url",
+      "path": [
+        "url",
+      ],
+      "validation": "url",
+    },
+    {
+      "code": "invalid_string",
+      "message": "Invalid",
+      "path": [
+        "phone",
+      ],
+      "validation": "regex",
+    },
+  ],
+  "name": "ZodError",
+}
+`;
+
+exports[`AppController (e2e) /query_7 fail (POST) 2`] = `
+{
+  "issues": [
+    {
+      "code": "too_big",
+      "exact": false,
+      "inclusive": true,
+      "maximum": 10,
+      "message": "String must contain at most 10 character(s)",
+      "path": [
+        "str",
+      ],
+      "type": "string",
+    },
+    {
+      "code": "too_big",
+      "exact": false,
+      "inclusive": true,
+      "maximum": 23,
+      "message": "Number must be less than or equal to 23",
+      "path": [
+        "nbr",
+      ],
+      "type": "number",
+    },
+  ],
+  "name": "ZodError",
+}
+`;
+
+exports[`AppController (e2e) /query_7 success (POST) 1`] = `
+{
+  "email": "hey@hey.com",
+  "nbr": 14,
+  "phone": "1234567894",
+  "str": "hello",
+  "url": "https://google.com",
 }
 `;

@@ -59,3 +59,16 @@ export class Query5 {
 export class Query6 {
   arr: Query4[];
 }
+
+export class Query7 {
+  @ApiProperty({ minLength: 1, maxLength: 10 })
+  str: string;
+  @ApiProperty({ minimum: -3, maximum: 23 })
+  nbr: number;
+  @ApiProperty({ format: 'email' })
+  email: string;
+  @ApiProperty({ format: 'url' })
+  url: string;
+  @ApiProperty({ pattern: /^[0-9]{10}$/.source })
+  phone: string;
+}

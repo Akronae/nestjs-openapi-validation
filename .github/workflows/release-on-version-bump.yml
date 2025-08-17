@@ -1,0 +1,32 @@
+name: Release & publish on `package.json#version` bump
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish-on-release:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          registry-url: 'https://registry.npmjs.org'
+      - run: yarn
+      - run: yarn test
+      - run: yarn lib:build
+      - run: yarn publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - uses: Makepad-fr/auto-release-on-version-bump-action@0.0.2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: '$newVersion'
+          body: '✨ New release $newVersion'
+          draft: 'false'
+          pre-release: 'auto'
+          generate-release-note: 'true'
+          tag-name: '$newVersion'

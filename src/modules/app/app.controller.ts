@@ -1,5 +1,13 @@
 import { Body, Controller, Get, Post, Query, Version } from '@nestjs/common';
-import { Query1, Query2, Query3, Query4, Query5, Query6 } from './app.dto';
+import {
+  Query1,
+  Query2,
+  Query3,
+  Query4,
+  Query5,
+  Query6,
+  Query7,
+} from './app.dto';
 import { AppService } from './app.service';
 
 @Controller({
@@ -46,7 +54,11 @@ export class AppController {
 
   @Post('query_6')
   getQuery6(@Body() query: Query6) {
-    console.log(query);
+    return query;
+  }
+
+  @Post('query_7')
+  getQuery7(@Body() query: Query7) {
     return query;
   }
 }

@@ -2,9 +2,9 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { apiReference } from '@scalar/nestjs-api-reference';
+import { MetadataValidationPipe } from './lib/openapi-validation.pipe';
 import metadata from './metadata';
 import { AppModule } from './modules/app/app.module';
-import { MetadataValidationPipe } from './modules/app/openapi-validation.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {});

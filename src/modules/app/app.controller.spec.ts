@@ -7,10 +7,10 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import metadata from '../../../src/metadata';
-import { Query6 } from './app.dto';
+import { MetadataValidationPipe } from '../../lib/openapi-validation.pipe';
+import { Query6, Query7 } from './app.dto';
 import { AppModule } from './app.module';
 import { AppService } from './app.service';
-import { MetadataValidationPipe } from './openapi-validation.pipe';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -55,11 +55,13 @@ describe('AppController (e2e)', () => {
   });
 
   it('/query_1 success (GET)', async () => {
-    const res = await request(app.getHttpServer()).get('/v1/query_1').query({
-      str1: 'lala',
-      date: '2025',
-      nbr1: 123,
-    });
+    const res = await request(app.getHttpServer())
+      .get('/v1/query_1')
+      .query({
+        str1: 'lala',
+        date: new Date('2025'),
+        nbr1: 123,
+      });
     expect(res.status).toBe(200);
     expect(res.body).toMatchSnapshot();
   });
@@ -117,7 +119,7 @@ describe('AppController (e2e)', () => {
       .query({
         query1: {
           str1: 'ahah',
-          date: '2025-05-02',
+          date: new Date('2025-05-02'),
           nbr1: 99,
         },
         field2: {
@@ -137,7 +139,7 @@ describe('AppController (e2e)', () => {
         query4: {
           query1: {
             str1: 'ahah',
-            date: '2025-05-02',
+            date: new Date('2025-05-02'),
             nbr1: 99,
           },
           field2: {
@@ -189,7 +191,6 @@ describe('AppController (e2e)', () => {
           },
         ],
       } satisfies Query6);
-    console.log(JSON.stringify(res.body, null, 2));
 
     expect(res.status).toBe(201);
     expect(res.body).toMatchSnapshot();
@@ -210,6 +211,51 @@ describe('AppController (e2e)', () => {
           },
         ],
       });
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/query_7 success (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/query_7')
+      .send({
+        str: 'hello',
+        nbr: 14,
+        email: 'hey@hey.com',
+        url: 'https://google.com',
+        phone: '1234567894',
+      } satisfies Query7);
+
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/query_7 fail (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/query_7')
+      .send({
+        str: 'a',
+        nbr: -10,
+        email: 'hey',
+        url: 'google',
+        phone: '12',
+      } satisfies Query7);
+
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/query_7 fail (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/query_7')
+      .send({
+        str: 'hellooooooooooooooooooooooooooooooooooo',
+        nbr: 140000,
+        email: 'hey@hey.com',
+        url: 'https://google.com',
+        phone: '1234567894',
+      } satisfies Query7);
+
     expect(res.status).toBe(400);
     expect(res.body).toMatchSnapshot();
   });
