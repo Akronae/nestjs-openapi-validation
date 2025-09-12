@@ -72,3 +72,36 @@ export class Query7 {
   @ApiProperty({ pattern: /^[0-9]{10}$/.source })
   phone: string;
 }
+
+export class Query8 {
+  nested: {
+    long: {
+      prop: number;
+    };
+  };
+}
+
+export class Query9 {
+  required: {
+    long: {
+      prop: number;
+    };
+    opt?: {
+      prop: number;
+    };
+    semi?: {
+      opt?: number;
+    };
+  };
+  opt?: {
+    long: {
+      prop: number;
+    };
+    opt?: {
+      prop: number;
+    };
+    semi?: {
+      opt?: number;
+    };
+  };
+}

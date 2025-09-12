@@ -611,3 +611,215 @@ exports[`AppController (e2e) /query_7 success (POST) 1`] = `
   "url": "https://google.com",
 }
 `;
+
+exports[`AppController (e2e) /query_8 fail (POST) 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received nan",
+      "path": [
+        "nested",
+        "long",
+        "prop",
+      ],
+      "received": "nan",
+    },
+  ],
+  "name": "ZodError",
+}
+`;
+
+exports[`AppController (e2e) /query_8 success (POST) 1`] = `
+{
+  "nested": {
+    "long": {
+      "prop": 21,
+    },
+  },
+}
+`;
+
+exports[`AppController (e2e) /query_9 fail (POST) 1`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "object",
+      "message": "Required",
+      "path": [
+        "required",
+      ],
+      "received": "undefined",
+    },
+  ],
+  "name": "ZodError",
+}
+`;
+
+exports[`AppController (e2e) /query_9 fail (POST) 2`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "object",
+      "message": "Required",
+      "path": [
+        "required",
+        "long",
+      ],
+      "received": "undefined",
+    },
+  ],
+  "name": "ZodError",
+}
+`;
+
+exports[`AppController (e2e) /query_9 fail (POST) 3`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "object",
+      "message": "Expected object, received number",
+      "path": [
+        "required",
+        "long",
+      ],
+      "received": "number",
+    },
+  ],
+  "name": "ZodError",
+}
+`;
+
+exports[`AppController (e2e) /query_9 fail (POST) 4`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received nan",
+      "path": [
+        "required",
+        "long",
+        "prop",
+      ],
+      "received": "nan",
+    },
+  ],
+  "name": "ZodError",
+}
+`;
+
+exports[`AppController (e2e) /query_9 fail (POST) 5`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "object",
+      "message": "Required",
+      "path": [
+        "opt",
+        "long",
+      ],
+      "received": "undefined",
+    },
+  ],
+  "name": "ZodError",
+}
+`;
+
+exports[`AppController (e2e) /query_9 fail (POST) 6`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received nan",
+      "path": [
+        "opt",
+        "long",
+        "prop",
+      ],
+      "received": "nan",
+    },
+  ],
+  "name": "ZodError",
+}
+`;
+
+exports[`AppController (e2e) /query_9 fail (POST) 7`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received nan",
+      "path": [
+        "opt",
+        "long",
+        "prop",
+      ],
+      "received": "nan",
+    },
+  ],
+  "name": "ZodError",
+}
+`;
+
+exports[`AppController (e2e) /query_9 fail (POST) 8`] = `
+{
+  "issues": [
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "message": "Expected number, received nan",
+      "path": [
+        "required",
+        "opt",
+        "prop",
+      ],
+      "received": "nan",
+    },
+  ],
+  "name": "ZodError",
+}
+`;
+
+exports[`AppController (e2e) /query_9 success (POST) 1`] = `
+{
+  "required": {
+    "long": {
+      "prop": 21,
+    },
+    "semi": {},
+  },
+}
+`;
+
+exports[`AppController (e2e) /query_9 success (POST) 2`] = `
+{
+  "required": {
+    "long": {
+      "prop": 21,
+    },
+  },
+}
+`;
+
+exports[`AppController (e2e) /query_9 success (POST) 3`] = `
+{
+  "opt": {
+    "long": {
+      "prop": 21,
+    },
+  },
+  "required": {
+    "long": {
+      "prop": 21,
+    },
+  },
+}
+`;

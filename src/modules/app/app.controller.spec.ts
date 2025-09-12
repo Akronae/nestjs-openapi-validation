@@ -8,7 +8,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import metadata from '../../../src/metadata';
 import { OpenApiValidationPipe } from '../../lib/openapi-validation.pipe';
-import { Query6, Query7 } from './app.dto';
+import { Query6, Query7, Query8, Query9 } from './app.dto';
 import { AppModule } from './app.module';
 import { AppService } from './app.service';
 
@@ -257,6 +257,164 @@ describe('AppController (e2e)', () => {
       } satisfies Query7);
 
     expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/query_8 success (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/query_8')
+      .send({
+        nested: {
+          long: {
+            prop: 21,
+          },
+        },
+      } satisfies Query8);
+
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/query_8 fail (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/query_8')
+      .send({
+        nested: {
+          long: {
+            prop: 'BB' as any,
+          },
+        },
+      } satisfies Query8);
+
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/query_9 success (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/query_9')
+      .send({
+        required: {
+          long: { prop: 21 },
+          semi: {},
+        },
+      } satisfies Query9);
+
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/query_9 success (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/query_9')
+      .send({
+        required: {
+          long: { prop: 21 },
+        },
+      } satisfies Query9);
+
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/query_9 fail (POST)', async () => {
+    const res = await request(app.getHttpServer()).post('/v1/query_9').send({});
+
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/query_9 fail (POST)', async () => {
+    const res = await request(app.getHttpServer()).post('/v1/query_9').send({
+      required: {},
+    });
+
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/query_9 fail (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/query_9')
+      .send({
+        required: {
+          long: 31,
+        },
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/query_9 fail (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/query_9')
+      .send({
+        required: {
+          long: { prop: 'dd' },
+        },
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/query_9 fail (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/query_9')
+      .send({
+        required: {
+          long: { prop: 21 },
+        },
+        opt: {},
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/query_9 fail (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/query_9')
+      .send({
+        required: {
+          long: { prop: 21 },
+        },
+        opt: { long: {} },
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/query_9 fail (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/query_9')
+      .send({
+        required: {
+          long: { prop: 21 },
+        },
+        opt: { long: { prop: 'dsdd' } },
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/query_9 fail (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/query_9')
+      .send({
+        required: {
+          long: { prop: 21 },
+          opt: {},
+        },
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/query_9 success (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/query_9')
+      .send({
+        required: {
+          long: { prop: 21 },
+        },
+        opt: { long: { prop: 21 } },
+      } as Query9);
+
+    expect(res.status).toBe(201);
     expect(res.body).toMatchSnapshot();
   });
 });

@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { OpenAPIObject } from '@nestjs/swagger';
 import { mapEntries } from 'radash';
+import { inspect } from 'util';
 import z, { ZodType } from 'zod';
 
 type OpenApiProp = {
@@ -20,37 +21,23 @@ type OpenApiProp = {
   minLength?: number;
   maxLength?: number;
   pattern?: string;
+  properties?: Record<string, OpenApiProp>;
+  required?: boolean;
+};
+
+type PropType<T = { name: string }> = {
+  type: () => T | T[] | Record<string | number, PropType<T>>;
+  required: boolean;
 };
 
 @Injectable()
 export class OpenApiValidationPipe implements PipeTransform {
-  private schemaMap: Record<
-    string,
-    Record<
-      string,
-      {
-        type: () => { name: string } | { name: string }[];
-        required: boolean;
-      }
-    >
-  > = {};
+  private schemaMap: Record<string, Record<string, PropType>> = {};
 
   constructor(
     tsMetadata: () => Promise<{
       '@nestjs/swagger': {
-        models: (
-          | Promise<any>
-          | Record<
-              string,
-              Record<
-                string,
-                {
-                  type: () => { name: string } | { name: string }[];
-                  required: boolean;
-                }
-              >
-            >
-        )[][];
+        models: (Promise<any> | Record<string, Record<string, PropType>>)[][];
       };
     }>,
     private readonly openapi: OpenAPIObject,
@@ -101,7 +88,7 @@ export class OpenApiValidationPipe implements PipeTransform {
     return zodSchema;
   }
 
-  openapiPropToZod(prop: OpenApiProp, opts: { required: boolean }): ZodType {
+  openapiPropToZod(prop: OpenApiProp, opts: Partial<PropType>): ZodType {
     if (prop.oneOf?.length > 1) {
       return z.union(
         prop.oneOf.map((o) => this.openapiPropToZod(o, { required: true })) as [
@@ -128,6 +115,16 @@ export class OpenApiValidationPipe implements PipeTransform {
           : type == 'array'
             ? z.array(this.openapiPropToZod(prop.items, opts))
             : null;
+
+      if (type == 'object') {
+        console.log(inspect(prop, { colors: true, depth: null }));
+        val = z.object(
+          mapEntries(prop.properties, (k, v) => [
+            k,
+            this.openapiPropToZod(v, opts.type?.()[k]),
+          ]),
+        );
+      }
 
       if (prop.format) {
         let format = prop.format;

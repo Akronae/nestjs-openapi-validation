@@ -7,6 +7,8 @@ import {
   Query5,
   Query6,
   Query7,
+  Query8,
+  Query9,
 } from './app.dto';
 import { AppService } from './app.service';
 
@@ -59,6 +61,16 @@ export class AppController {
 
   @Post('query_7')
   getQuery7(@Body() query: Query7) {
+    return query;
+  }
+
+  @Post('query_8')
+  getQuery8(@Body() query: Query8) {
+    return query;
+  }
+
+  @Post('query_9')
+  getQuery9(@Body() query: Query9) {
     return query;
   }
 }
