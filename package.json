@@ -5,13 +5,13 @@
   "license": "MIT",
   "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610",
   "files": [
-    "dist"
+    "lib"
   ],
-  "main": "./dist/src/lib/index.js",
-  "module": "./dist/src/lib/index.js",
-  "types": "./dist/src/lib/index.d.ts",
+  "main": "./lib/src/lib/index.js",
+  "module": "./lib/src/lib/index.js",
+  "types": "./lib/src/lib/index.d.ts",
   "scripts": {
-    "lib:build": "rimraf dist && tsc --project tsconfig.lib.json && tsc-alias -p tsconfig.lib.json",
+    "lib:build": "rimraf lib && tsc --project tsconfig.lib.json && tsc-alias -p tsconfig.lib.json",
     "build": "nest build",
     "dev": "nest start --watch --type-check",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
