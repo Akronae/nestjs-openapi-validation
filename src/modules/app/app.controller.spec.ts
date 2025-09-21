@@ -7,7 +7,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import metadata from '../../../src/metadata';
-import { OpenApiResponseValidationInterceptor } from '../../lib/openapi-validation.interceptor';
+import { OpenApiValidationInterceptor } from '../../lib/openapi-validation.interceptor';
 import { OpenApiValidationPipe } from '../../lib/openapi-validation.pipe';
 import { Query10, Query6, Query7, Query8, Query9 } from './app.dto';
 import { AppModule } from './app.module';
@@ -48,7 +48,7 @@ describe('AppController (e2e)', () => {
     );
 
     app.useGlobalInterceptors(
-      new OpenApiResponseValidationInterceptor(validatorPipe),
+      new OpenApiValidationInterceptor(metadata, document),
     );
 
     await app.init();

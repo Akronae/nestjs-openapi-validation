@@ -2,6 +2,7 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { apiReference } from '@scalar/nestjs-api-reference';
+import { OpenApiValidationInterceptor } from './lib/openapi-validation.interceptor';
 import { OpenApiValidationPipe } from './lib/openapi-validation.pipe';
 import metadata from './metadata';
 import { AppModule } from './modules/app/app.module';
@@ -50,6 +51,10 @@ async function bootstrap() {
       transform: true,
       transformOptions: { enableImplicitConversion: true },
     }),
+  );
+
+  app.useGlobalInterceptors(
+    new OpenApiValidationInterceptor(metadata, document),
   );
 
   await app.listen(3001);
