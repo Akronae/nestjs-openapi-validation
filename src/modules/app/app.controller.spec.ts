@@ -7,8 +7,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import metadata from '../../../src/metadata';
+import { OpenApiResponseValidationInterceptor } from '../../lib/openapi-validation.interceptor';
 import { OpenApiValidationPipe } from '../../lib/openapi-validation.pipe';
-import { Query6, Query7, Query8, Query9 } from './app.dto';
+import { Query10, Query6, Query7, Query8, Query9 } from './app.dto';
 import { AppModule } from './app.module';
 import { AppService } from './app.service';
 
@@ -37,12 +38,17 @@ describe('AppController (e2e)', () => {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document);
 
+    const validatorPipe = new OpenApiValidationPipe(metadata, document);
     app.useGlobalPipes(
-      new OpenApiValidationPipe(metadata, document),
+      validatorPipe,
       new ValidationPipe({
         transform: true,
         transformOptions: { enableImplicitConversion: true },
       }),
+    );
+
+    app.useGlobalInterceptors(
+      new OpenApiResponseValidationInterceptor(validatorPipe),
     );
 
     await app.init();
@@ -412,8 +418,281 @@ describe('AppController (e2e)', () => {
           long: { prop: 21 },
         },
         opt: { long: { prop: 21 } },
-      } as Query9);
+      } satisfies Query9);
 
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/query_10 success (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/query_10')
+      .send({
+        arr2d: [
+          ['a', 'b'],
+          ['c', 'd'],
+        ],
+      } satisfies Query10);
+
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/query_10 fail (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/query_10')
+      .send({
+        arr2d: [['a', 'b'], ['c']],
+        arr2d2: [
+          [1, 2, 3],
+          [4, 5, 'dnds' as any],
+        ],
+      } satisfies Query10);
+
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/response_1 fail (GET)', async () => {
+    const res = await request(app.getHttpServer()).get('/v1/response_1');
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/response_1 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/response_1')
+      .query({
+        str1: 'lala',
+        date: new Date('2025'),
+        nbr1: 123,
+      });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/response_2 fail (GET)', async () => {
+    const res = await request(app.getHttpServer()).get('/v1/response_2').query({
+      str1: 'lala', // missing required nbr1 or enum1
+    });
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/response_2 success (GET)', async () => {
+    const res = await request(app.getHttpServer()).get('/v1/response_2').query({
+      str1: 'test',
+      nbr1: 42,
+      enum1: 'A',
+    });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/response_3 fail (GET)', async () => {
+    const res = await request(app.getHttpServer()).get('/v1/response_3').query({
+      str1: 'wrong', // missing enums or invalid enum
+    });
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/response_3 success (GET)', async () => {
+    const res = await request(app.getHttpServer()).get('/v1/response_3').query({
+      str1: 'hello',
+      enum1: 'BB',
+      enum2: 'okok',
+    });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/response_4 fail (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/response_4')
+      .query({
+        query1: { a: 1 },
+        field2: { a: 1 },
+      });
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/response_4 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/response_4')
+      .query({
+        query1: {
+          str1: 'ok',
+          date: new Date('2025-06-01'),
+          nbr1: 10,
+        },
+        field2: {
+          str1: 'yay',
+          enum1: 'A',
+          enum2: 'okok',
+        },
+      });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/response_5 fail (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/response_5')
+      .send({
+        query4: {
+          query1: { str1: 'fail', date: 'invalid', nbr1: 'abc' },
+          field2: { str1: '!!!', enum1: 'Z', enum2: 'bad' },
+        },
+      });
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/response_5 success (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/response_5')
+      .send({
+        query4: {
+          query1: { str1: 'ok', date: new Date('2025-06-01'), nbr1: 123 },
+          field2: { str1: 'good', enum1: 'A', enum2: 'okok' },
+        },
+        force: true,
+      });
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/response_6 success (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/response_6')
+      .send({
+        arr: [
+          {
+            query1: { str1: 'abc', date: new Date('2025-01-01'), nbr1: 1 },
+            field2: { str1: 'x', enum1: 'A', nbr1: 2 },
+          },
+          {
+            query1: { str1: 'def', date: new Date('2025-02-01'), nbr1: 3 },
+            field2: { enum1: 'AA', enum2: 'okok' },
+          },
+        ],
+      } satisfies Query6);
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/response_6 fail (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/response_6')
+      .send({
+        arr: [
+          {
+            query1: { str1: 'abc', date: new Date('2025-01-01'), nbr1: 1 },
+            field2: { enum1: 'INVALID' as any },
+          },
+        ],
+      });
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/response_7 fail (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/response_7')
+      .send({
+        str: '',
+        nbr: -5,
+        email: 'invalid',
+        url: 'not-a-url',
+        phone: '123',
+      } satisfies Query7);
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/response_7 success (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/response_7')
+      .send({
+        str: 'most 10',
+        nbr: 10,
+        email: 'test@example.com',
+        url: 'https://example.com',
+        phone: '1234567890',
+      } satisfies Query7);
+    console.log(res.body);
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/response_8 fail (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/response_8')
+      .send({
+        nested: { long: { prop: 'wrong' as any } },
+      } satisfies Query8);
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/response_8 success (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/response_8')
+      .send({
+        nested: { long: { prop: 42 } },
+      } satisfies Query8);
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/response_9 fail (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/response_9')
+      .send({});
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/response_9 success (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/response_9')
+      .send({
+        required: { long: { prop: 21 } },
+        opt: { long: { prop: 21 } },
+      } satisfies Query9);
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/response_10 fail (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/response_10')
+      .send({
+        arr2d: [['a'], ['b', 'c', 'd']],
+        arr2d2: [
+          [1, 2],
+          [3, 'wrong' as any],
+        ],
+      } satisfies Query10);
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/response_10 success (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/response_10')
+      .send({
+        arr2d: [
+          ['a', 'b'],
+          ['c', 'd'],
+        ],
+        arr2d2: [
+          [1, 2, 3],
+          [4, 5, 6],
+        ],
+      } satisfies Query10);
     expect(res.status).toBe(201);
     expect(res.body).toMatchSnapshot();
   });

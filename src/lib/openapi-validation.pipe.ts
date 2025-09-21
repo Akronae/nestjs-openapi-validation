@@ -2,11 +2,11 @@ import {
   ArgumentMetadata,
   BadRequestException,
   Injectable,
+  Paramtype,
   PipeTransform,
 } from '@nestjs/common';
 import { OpenAPIObject } from '@nestjs/swagger';
 import { mapEntries } from 'radash';
-import { inspect } from 'util';
 import z, { ZodType } from 'zod';
 
 type OpenApiProp = {
@@ -25,14 +25,18 @@ type OpenApiProp = {
   required?: boolean;
 };
 
+type DeepArray<T> = T | DeepArray<T>[];
+
 type PropType<T = { name: string }> = {
-  type: () => T | T[] | Record<string | number, PropType<T>>;
+  type: () => DeepArray<T> | Record<string | number, PropType<T>>;
   required: boolean;
 };
 
+export class OpenApiValidationPipeError extends Error {}
+
 @Injectable()
 export class OpenApiValidationPipe implements PipeTransform {
-  private schemaMap: Record<string, Record<string, PropType>> = {};
+  public schemaMap: Record<string, Record<string, PropType>> = {};
 
   constructor(
     tsMetadata: () => Promise<{
@@ -40,7 +44,7 @@ export class OpenApiValidationPipe implements PipeTransform {
         models: (Promise<any> | Record<string, Record<string, PropType>>)[][];
       };
     }>,
-    private readonly openapi: OpenAPIObject,
+    public readonly openapi: OpenAPIObject,
   ) {
     tsMetadata().then((res) => {
       const models = res['@nestjs/swagger'].models[0];
@@ -56,12 +60,15 @@ export class OpenApiValidationPipe implements PipeTransform {
     const dtoName = metadata.metatype?.name;
     if (!dtoName || !this.schemaMap[dtoName]) return value;
 
-    const zodSchema = this.getZodSchema(dtoName);
+    return this.validate(value, dtoName, metadata.type);
+  }
 
+  validate(value: any, dtoName: string, type: Paramtype | 'response') {
+    const zodSchema = this.getZodSchema(dtoName);
     const res = zodSchema.safeParse(value);
 
     if (!res.success) {
-      throw new BadRequestException(res.error);
+      throw new BadRequestException({ error: { [type]: res.error } });
     }
 
     return res.data;
@@ -77,8 +84,9 @@ export class OpenApiValidationPipe implements PipeTransform {
         const val = this.openapiPropToZod(prop, v);
 
         if (!val) {
-          console.error(prop);
-          throw new Error(`Unknown type: ${prop.type} for key ${k}`);
+          throw new OpenApiValidationPipeError(
+            `Unknown type: ${prop.type} for key ${k}`,
+          );
         }
 
         return [k, val];
@@ -117,7 +125,6 @@ export class OpenApiValidationPipe implements PipeTransform {
             : null;
 
       if (type == 'object') {
-        console.log(inspect(prop, { colors: true, depth: null }));
         val = z.object(
           mapEntries(prop.properties, (k, v) => [
             k,

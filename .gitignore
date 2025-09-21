@@ -5,7 +5,7 @@ env.json
 *.webm
 *.mkv
 uploads/
-lib
+/lib
 
 # Created by https://www.toptal.com/developers/gitignore/api/vercel,node,yarn,windows,linux,macos,visualstudiocode,intellij
 # Edit at https://www.toptal.com/developers/gitignore?templates=vercel,node,yarn,windows,linux,macos,visualstudiocode,intellij

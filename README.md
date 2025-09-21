@@ -1,8 +1,10 @@
-# 🛡️ NestJS OpenAPI Validation
+# 🛡️ NestJS OpenAPI Validation v0.1.3
 
 [![npm version](https://badge.fury.io/js/nestjs-openapi-validation.svg)](https://badge.fury.io/js/nestjs-openapi-validation)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.1%2B-blue.svg)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-16%2B-brightgreen)](https://nodejs.org/)
+[![NestJS](https://img.shields.io/badge/NestJS-10%2B-ea2845)](https://nestjs.com/)
 
 > **Seamlessly validate your NestJS APIs using OpenAPI schemas with the power of Zod** 🚀
 
@@ -14,18 +16,32 @@ Transform your OpenAPI specifications into runtime validation with zero configur
 - ⚡ **Zero config** - Works out of the box with existing NestJS + Swagger setups
 - 🛠️ **Zod-powered** - Leverage Zod's robust validation and error reporting
 - 📚 **Rich validation** - Support for enums, unions, nested objects, arrays, and more
+- 🧯 **Prevent data leaks** - Blocks unexpected request fields so accidental extra fields (e.g., `passwordHash`, `internalNotes`) never leak
+- 🛡️ **Strict user input validation** - Rejects user provided extra fields and enforces types/coercion so unintended data never reaches your code
 - 🔍 **Format validation** - Email, URL, date-time, and custom pattern validation
 - 🎨 **Beautiful errors** - Clear, actionable validation error messages
 
 ## 🚀 Quick Start
 
-### Installation
+## 🚀 Installation
 
 ```bash
-npm install nestjs-openapi-validation
-# or
-yarn add nestjs-openapi-validation
+# Using npm
+npm install nestjs-openapi-validation zod
+
+# Using yarn
+yarn add nestjs-openapi-validation zod
+
+# Using pnpm
+pnpm add nestjs-openapi-validation zod
 ```
+
+### Peer Dependencies
+
+This library requires the following peer dependencies:
+
+- @nestjs/common: ^10.0.0
+- @nestjs/swagger: ^7.4.0
 
 ### Basic Setup
 
@@ -71,7 +87,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { OpenApiValidationPipe } from 'nestjs-openapi-validation';
-// This is automatically generated thanks to the @nestjs/swagger plugin
+// This is automatically generated thanks to @nestjs/swagger plugin
 // defined in nest-cli.json
 import metadata from './metadata';
 import { AppModule } from './app.module';
@@ -79,7 +95,6 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Build your OpenAPI document as usual
   const config = new DocumentBuilder()
     .setTitle('My API')
     .setDescription('API with automatic validation')
@@ -89,7 +104,7 @@ async function bootstrap() {
   await SwaggerModule.loadPluginMetadata(metadata);
   const document = SwaggerModule.createDocument(app, config);
 
-  // Add the validation pipe
+  // Add validation pipe
   app.useGlobalPipes(
     new OpenApiValidationPipe(metadata, document),
     new ValidationPipe({ transform: true }),
@@ -99,7 +114,7 @@ async function bootstrap() {
 }
 ```
 
-### Define Your DTOs
+### Define DTOs
 
 ```typescript
 // user.dto.ts
@@ -133,8 +148,6 @@ export class CreateUserDto {
   tags?: string[];
 }
 ```
-
-**⚠️ note:** for simple properties, you do not need to decorate them with `@ApiProperty` thanks to `@nestjs/swagger` plugin defined in `nest-cli.json`, properties type and nullability are automatically extracted.
 
 ### Use in Controllers
 
@@ -181,11 +194,19 @@ export class FlexibleQuery {
 
 ### Nested Objects & Arrays
 
+Complexe types are supported out of the box without decorators.
+
 ```typescript
 export class OrderDto {
   items: OrderItemDto[];
   customer: CustomerDto;
   orderDate: Date;
+  stringMatrix: string[][];
+  deeply: {
+    nested {
+      value: true;
+    }
+  }
 }
 ```
 
@@ -202,9 +223,16 @@ export class ProductDto {
 
   @ApiProperty({
     minimum: 0.01,
-    maximum: 999999.99,
+    maximum: 1000000,
   })
   price: number;
+
+  @ApiProperty({
+    minItems: 1,
+    maxItems: 10,
+    items: { type: 'string', maxLength: 50 },
+  })
+  tags: string[];
 
   @ApiProperty({ format: 'url' })
   imageUrl: string;
@@ -250,31 +278,34 @@ new OpenApiValidationPipe(
 
 ## 🚨 Error Handling
 
-When validation fails, the pipe throws a `BadRequestException` with detailed Zod error information:
+On validation failures, the library returns HTTP 400 (Bad Request) with Zod errors grouped by location (e.g., `query`, `body`, or `response`). Each group contains an `issues` array describing the problems.
 
-```json
+```jsonc
+// Example error response (request validation)
 {
-  "statusCode": 400,
-  "message": [
-    {
-      "code": "too_small",
-      "minimum": 2,
-      "type": "string",
-      "inclusive": true,
-      "exact": false,
-      "message": "String must contain at least 2 character(s)",
-      "path": ["name"]
+  "error": {
+    "query": {
+      "issues": [
+        {
+          "code": "invalid_type",
+          "expected": "string",
+          "message": "required",
+          "path": ["str1"],
+          "received": "undefined",
+        },
+        {
+          "code": "invalid_string",
+          "message": "Invalid datetime",
+          "path": ["date"],
+          "validation": "datetime",
+        },
+      ],
     },
-    {
-      "validation": "email",
-      "code": "invalid_string",
-      "message": "Invalid email",
-      "path": ["email"]
-    }
-  ],
-  "error": "Bad Request"
+  },
 }
 ```
+
+The same structure applies to response validation, where issues would be reported under `response`.
 
 ## 🧪 Testing
 
@@ -282,7 +313,14 @@ The library includes comprehensive tests covering all validation scenarios:
 
 ```bash
 # Run tests
+# Using yarn
+yarn test
+
+# Using npm
 npm test
+
+# Using pnpm
+pnpm test
 ```
 
 Example test case:
@@ -331,18 +369,19 @@ yarn dev
 Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create a new branch for your feature or bugfix
+3. Make your changes and write tests
+4. Submit a pull request
 
-## 📝 License
+## 📄 License
 
-This project is licensed under the MIT License
+This project is [MIT licensed](LICENSE).
 
 ## 🙏 Acknowledgments
 
-- Built on top of the amazing [Zod](https://github.com/colinhacks/zod) validation library
+- [NestJS](https://nestjs.com/)
+- [Zod](https://zod.dev/)
+- [Swagger/OpenAPI](https://swagger.io/)
 
 ---
 

@@ -105,3 +105,8 @@ export class Query9 {
     };
   };
 }
+
+export class Query10 {
+  arr2d: string[][];
+  arr2d2?: number[][];
+}
