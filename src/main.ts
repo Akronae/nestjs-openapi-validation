@@ -44,6 +44,9 @@ async function bootstrap() {
       },
     }),
   );
+  app.getHttpAdapter().get('/api-json', (_, res) => {
+    res.json(document);
+  });
 
   app.useGlobalPipes(
     new OpenApiValidationPipe(metadata, document),

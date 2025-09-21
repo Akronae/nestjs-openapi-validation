@@ -40,10 +40,11 @@ export class OpenApiValidator {
     public readonly openapi: OpenAPIObject,
   ) {
     tsMetadata().then((res) => {
-      const models = res['@nestjs/swagger'].models[0];
-      for (const classes of Object.values(models)) {
-        for (const [className, fields] of Object.entries(classes)) {
-          this.schemata[className] = fields as (typeof this.schemata)[string];
+      for (const model of res['@nestjs/swagger'].models) {
+        for (const classes of Object.values(model)) {
+          for (const [className, fields] of Object.entries(classes)) {
+            this.schemata[className] = fields as (typeof this.schemata)[string];
+          }
         }
       }
     });
@@ -128,23 +129,23 @@ export class OpenApiValidator {
         }
       }
 
-      if (prop.minimum && val['min']) {
+      if (prop.minimum != undefined && val['min']) {
         val = val['min'](prop.minimum);
       }
 
-      if (prop.maximum && val['max']) {
+      if (prop.maximum != undefined && val['max']) {
         val = val['max'](prop.maximum);
       }
 
-      if (prop.minLength && val['min']) {
+      if (prop.minLength != undefined && val['min']) {
         val = val['min'](prop.minLength);
       }
 
-      if (prop.maxLength && val['max']) {
+      if (prop.maxLength != undefined && val['max']) {
         val = val['max'](prop.maxLength);
       }
 
-      if (prop.pattern && val['regex']) {
+      if (prop.pattern != undefined && val['regex']) {
         val = val['regex'](new RegExp(prop.pattern));
       }
     }

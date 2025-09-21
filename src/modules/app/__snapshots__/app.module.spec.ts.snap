@@ -1754,3 +1754,198 @@ exports[`AppController (e2e) /response_10 success (POST) 1`] = `
   ],
 }
 `;
+
+exports[`AppController (e2e) /users/query_1 fail (GET) 1`] = `
+{
+  "error": {
+    "query": {
+      "issues": [
+        {
+          "code": "invalid_type",
+          "expected": "string",
+          "message": "required",
+          "path": [
+            "name",
+          ],
+          "received": "undefined",
+        },
+      ],
+      "name": "ZodError",
+    },
+  },
+}
+`;
+
+exports[`AppController (e2e) /users/query_1 fail (GET) 2`] = `
+{
+  "error": {
+    "query": {
+      "issues": [
+        {
+          "code": "too_small",
+          "exact": false,
+          "inclusive": true,
+          "message": "Number must be greater than or equal to 0",
+          "minimum": 0,
+          "path": [
+            "age",
+          ],
+          "type": "number",
+        },
+      ],
+      "name": "ZodError",
+    },
+  },
+}
+`;
+
+exports[`AppController (e2e) /users/query_1 success (GET) 1`] = `
+{
+  "name": "lala",
+}
+`;
+
+exports[`AppController (e2e) /users/query_1 success (GET) 2`] = `
+{
+  "age": 34,
+  "name": "lala",
+}
+`;
+
+exports[`AppController (e2e) /users/query_2 fail (POST) 1`] = `
+{
+  "error": {
+    "body": {
+      "issues": [
+        {
+          "code": "invalid_type",
+          "expected": "string",
+          "message": "required",
+          "path": [
+            "name",
+          ],
+          "received": "undefined",
+        },
+      ],
+      "name": "ZodError",
+    },
+  },
+}
+`;
+
+exports[`AppController (e2e) /users/query_2 fail (POST) 2`] = `
+{
+  "error": {
+    "body": {
+      "issues": [
+        {
+          "code": "invalid_type",
+          "expected": "string",
+          "message": "required",
+          "path": [
+            "options",
+            "all",
+          ],
+          "received": "undefined",
+        },
+      ],
+      "name": "ZodError",
+    },
+  },
+}
+`;
+
+exports[`AppController (e2e) /users/query_2 success (POST) 1`] = `
+{
+  "name": "lala",
+}
+`;
+
+exports[`AppController (e2e) /users/query_2 success (POST) 2`] = `
+{
+  "name": "lala",
+  "options": {
+    "all": "yes",
+  },
+}
+`;
+
+exports[`AppController (e2e) /users/response_1 fail (GET) 1`] = `
+{
+  "error": {
+    "response": {
+      "issues": [
+        {
+          "code": "invalid_type",
+          "expected": "string",
+          "message": "required",
+          "path": [
+            "name",
+          ],
+          "received": "undefined",
+        },
+      ],
+      "name": "ZodError",
+    },
+  },
+}
+`;
+
+exports[`AppController (e2e) /users/response_1 success (GET) 1`] = `
+{
+  "age": 34,
+  "name": "lala",
+}
+`;
+
+exports[`AppController (e2e) /users/response_2 fail (POST) 1`] = `
+{
+  "error": {
+    "response": {
+      "issues": [
+        {
+          "code": "invalid_type",
+          "expected": "string",
+          "message": "required",
+          "path": [
+            "name",
+          ],
+          "received": "undefined",
+        },
+      ],
+      "name": "ZodError",
+    },
+  },
+}
+`;
+
+exports[`AppController (e2e) /users/response_2 fail (POST) 2`] = `
+{
+  "error": {
+    "response": {
+      "issues": [
+        {
+          "code": "invalid_type",
+          "expected": "string",
+          "message": "required",
+          "path": [
+            "options",
+            "all",
+          ],
+          "received": "undefined",
+        },
+      ],
+      "name": "ZodError",
+    },
+  },
+}
+`;
+
+exports[`AppController (e2e) /users/response_2 success (POST) 1`] = `
+{
+  "name": "lala",
+  "options": {
+    "all": "yes",
+  },
+}
+`;

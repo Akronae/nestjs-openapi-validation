@@ -1,0 +1,26 @@
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { UserQuery1, UserQuery2 } from './users.dto';
+
+@Controller({
+  path: 'users',
+  version: '1',
+})
+export class UsersController {
+  @Get('query_1')
+  getQuery1(@Query() query: UserQuery1) {
+    return query;
+  }
+  @Get('response_1')
+  getResponse1(@Query() query: any): UserQuery1 {
+    return query;
+  }
+
+  @Post('query_2')
+  getQuery2(@Body() body: UserQuery2) {
+    return body;
+  }
+  @Post('response_2')
+  getResponse2(@Body() body: any): UserQuery2 {
+    return body;
+  }
+}

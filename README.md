@@ -1,4 +1,4 @@
-# 🛡️ NestJS OpenAPI Validation v0.1.3
+# 🛡️ NestJS OpenAPI Validation
 
 [![npm version](https://badge.fury.io/js/nestjs-openapi-validation.svg)](https://badge.fury.io/js/nestjs-openapi-validation)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -23,8 +23,6 @@ Transform your OpenAPI specifications into runtime validation with zero configur
 
 ## 🚀 Quick Start
 
-## 🚀 Installation
-
 ```bash
 # Using npm
 npm install nestjs-openapi-validation zod
@@ -35,13 +33,6 @@ yarn add nestjs-openapi-validation zod
 # Using pnpm
 pnpm add nestjs-openapi-validation zod
 ```
-
-### Peer Dependencies
-
-This library requires the following peer dependencies:
-
-- @nestjs/common: ^10.0.0
-- @nestjs/swagger: ^7.4.0
 
 ### Basic Setup
 

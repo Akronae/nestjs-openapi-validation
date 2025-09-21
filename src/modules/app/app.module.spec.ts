@@ -6,9 +6,11 @@ import {
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
-import metadata from '../../../src/metadata';
 import { OpenApiValidationInterceptor } from '../../lib/openapi-validation.interceptor';
 import { OpenApiValidationPipe } from '../../lib/openapi-validation.pipe';
+import metadata from '../../metadata';
+import { UserQuery1, UserQuery2 } from '../users/users.dto';
+import { UsersModule } from '../users/users.module';
 import { Query10, Query6, Query7, Query8, Query9 } from './app.dto';
 import { AppModule } from './app.module';
 import { AppService } from './app.service';
@@ -18,7 +20,7 @@ describe('AppController (e2e)', () => {
 
   beforeAll(async () => {
     const mod: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AppModule, UsersModule],
       providers: [AppService],
     }).compile();
     app = mod.createNestApplication();
@@ -622,7 +624,6 @@ describe('AppController (e2e)', () => {
         url: 'https://example.com',
         phone: '1234567890',
       } satisfies Query7);
-    console.log(res.body);
     expect(res.status).toBe(201);
     expect(res.body).toMatchSnapshot();
   });
@@ -693,6 +694,127 @@ describe('AppController (e2e)', () => {
           [4, 5, 6],
         ],
       } satisfies Query10);
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_1 fail (GET)', async () => {
+    const res = await request(app.getHttpServer()).get('/v1/users/query_1');
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_1 fail (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_1')
+      .query({
+        name: 'lala',
+        age: -12,
+      });
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_1 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_1')
+      .query({
+        name: 'lala',
+      } satisfies UserQuery1);
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/users/query_1 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_1')
+      .query({
+        name: 'lala',
+        age: 34,
+      } satisfies UserQuery1);
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/response_1 fail (GET)', async () => {
+    const res = await request(app.getHttpServer()).get('/v1/users/response_1');
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/response_1 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/response_1')
+      .query({
+        name: 'lala',
+        age: 34,
+      } satisfies UserQuery1);
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  // ====
+
+  it('/users/query_2 fail (POST)', async () => {
+    const res = await request(app.getHttpServer()).post('/v1/users/query_2');
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_2 fail (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/users/query_2')
+      .send({
+        name: 'lala',
+        options: {},
+      });
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_2 success (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/users/query_2')
+      .send({
+        name: 'lala',
+      } satisfies UserQuery2);
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/users/query_2 success (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/users/query_2')
+      .send({
+        name: 'lala',
+        options: { all: 'yes' },
+      } satisfies UserQuery2);
+    expect(res.status).toBe(201);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/response_2 fail (POST)', async () => {
+    const res = await request(app.getHttpServer()).post('/v1/users/response_2');
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/response_2 fail (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/users/response_2')
+      .send({
+        name: 'lala',
+        options: {},
+      });
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/response_2 success (POST)', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/v1/users/response_2')
+      .send({
+        name: 'lala',
+        options: { all: 'yes' },
+      } satisfies UserQuery2);
     expect(res.status).toBe(201);
     expect(res.body).toMatchSnapshot();
   });
