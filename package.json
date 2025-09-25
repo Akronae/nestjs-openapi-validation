@@ -1,7 +1,7 @@
 {
   "name": "nestjs-openapi-validation",
   "description": "✅ OpenAPI validation for NestJS",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "license": "MIT",
   "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610",
   "files": [
