@@ -22,3 +22,8 @@ export class UserQuery3 {
   @ApiProperty({ minimum: 0, maximum: 120 })
   b?: number;
 }
+
+@OpenApiRegister()
+export class UserQuery4 {
+  required: string;
+}

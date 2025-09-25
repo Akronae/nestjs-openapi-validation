@@ -101,13 +101,9 @@ async function bootstrap() {
     // Include models registered with @OpenApiRegister()
     extraModels: getRegisteredOpenApiModels(),
   });
-  SwaggerModule.setup('api', app, document);
 
   // Validate user input
-  app.useGlobalPipes(
-    new OpenApiValidationPipe(metadata, document),
-    new ValidationPipe({ transform: true }),
-  );
+  app.useGlobalPipes(new OpenApiValidationPipe(metadata, document));
 
   // Validate responses
   app.useGlobalInterceptors(

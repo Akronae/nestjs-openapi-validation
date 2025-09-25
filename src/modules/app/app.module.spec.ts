@@ -1,8 +1,4 @@
-import {
-  INestApplication,
-  ValidationPipe,
-  VersioningType,
-} from '@nestjs/common';
+import { INestApplication, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
@@ -10,7 +6,12 @@ import { getRegisteredOpenApiModels } from '../../lib/openapi-register.decorator
 import { OpenApiValidationInterceptor } from '../../lib/openapi-validation.interceptor';
 import { OpenApiValidationPipe } from '../../lib/openapi-validation.pipe';
 import metadata from '../../metadata';
-import { UserQuery1, UserQuery2, UserQuery3 } from '../users/users.dto';
+import {
+  UserQuery1,
+  UserQuery2,
+  UserQuery3,
+  UserQuery4,
+} from '../users/users.dto';
 import { UsersModule } from '../users/users.module';
 import { Query10, Query6, Query7, Query8, Query9 } from './app.dto';
 import { AppModule } from './app.module';
@@ -43,14 +44,7 @@ describe('AppController (e2e)', () => {
     });
     SwaggerModule.setup('api', app, document);
 
-    const validatorPipe = new OpenApiValidationPipe(metadata, document);
-    app.useGlobalPipes(
-      validatorPipe,
-      new ValidationPipe({
-        transform: true,
-        transformOptions: { enableImplicitConversion: true },
-      }),
-    );
+    app.useGlobalPipes(new OpenApiValidationPipe(metadata, document));
 
     app.useGlobalInterceptors(
       new OpenApiValidationInterceptor(metadata, document),
@@ -853,6 +847,41 @@ describe('AppController (e2e)', () => {
         a: 'lala',
         b: 34,
       } satisfies UserQuery3);
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_4 fail (GET)', async () => {
+    const res = await request(app.getHttpServer()).get('/v1/users/query_4');
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_4 fail (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_4')
+      .query({
+        optional: 'lala',
+      });
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_4 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_4')
+      .query({
+        required: 'hello',
+      } satisfies UserQuery4);
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/users/query_4 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_4')
+      .query({
+        required: 'hi',
+      } satisfies UserQuery4);
     expect(res.status).toBe(200);
     expect(res.body).toMatchSnapshot();
   });

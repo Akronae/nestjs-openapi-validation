@@ -1,9 +1,12 @@
-import { ValidationPipe, VersioningType } from '@nestjs/common';
+import { VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { apiReference } from '@scalar/nestjs-api-reference';
-import { OpenApiValidationInterceptor } from './lib/openapi-validation.interceptor';
-import { OpenApiValidationPipe } from './lib/openapi-validation.pipe';
+import {
+  getRegisteredOpenApiModels,
+  OpenApiValidationInterceptor,
+  OpenApiValidationPipe,
+} from './lib';
 import metadata from './metadata';
 import { AppModule } from './modules/app/app.module';
 
@@ -29,7 +32,9 @@ async function bootstrap() {
     .build();
 
   await SwaggerModule.loadPluginMetadata(metadata);
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, config, {
+    extraModels: getRegisteredOpenApiModels(),
+  });
   app.use(
     '/api',
     apiReference({
@@ -48,13 +53,7 @@ async function bootstrap() {
     res.json(document);
   });
 
-  app.useGlobalPipes(
-    new OpenApiValidationPipe(metadata, document),
-    new ValidationPipe({
-      transform: true,
-      transformOptions: { enableImplicitConversion: true },
-    }),
-  );
+  app.useGlobalPipes(new OpenApiValidationPipe(metadata, document));
 
   app.useGlobalInterceptors(
     new OpenApiValidationInterceptor(metadata, document),

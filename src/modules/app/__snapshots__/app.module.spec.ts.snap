@@ -1918,6 +1918,52 @@ exports[`AppController (e2e) /users/query_3 success (GET) 1`] = `{}`;
 
 exports[`AppController (e2e) /users/query_3 success (GET) 2`] = `{}`;
 
+exports[`AppController (e2e) /users/query_4 fail (GET) 1`] = `
+{
+  "error": {
+    "query": {
+      "issues": [
+        {
+          "code": "invalid_type",
+          "expected": "string",
+          "message": "required",
+          "path": [
+            "required",
+          ],
+          "received": "undefined",
+        },
+      ],
+      "name": "ZodError",
+    },
+  },
+}
+`;
+
+exports[`AppController (e2e) /users/query_4 fail (GET) 2`] = `
+{
+  "error": {
+    "query": {
+      "issues": [
+        {
+          "code": "invalid_type",
+          "expected": "string",
+          "message": "required",
+          "path": [
+            "required",
+          ],
+          "received": "undefined",
+        },
+      ],
+      "name": "ZodError",
+    },
+  },
+}
+`;
+
+exports[`AppController (e2e) /users/query_4 success (GET) 1`] = `{}`;
+
+exports[`AppController (e2e) /users/query_4 success (GET) 2`] = `{}`;
+
 exports[`AppController (e2e) /users/response_1 fail (GET) 1`] = `
 {
   "error": {

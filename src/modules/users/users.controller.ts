@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { UserQuery1, UserQuery2, UserQuery3 } from './users.dto';
+import { UserQuery1, UserQuery2, UserQuery3, UserQuery4 } from './users.dto';
 
 @Controller({
   path: 'users',
@@ -26,6 +26,11 @@ export class UsersController {
 
   @Get('query_3')
   getQuery3(@Query() _query: UserQuery3) {
+    return 'ok!';
+  }
+
+  @Get('query_4')
+  getQuery4(@Query() _query: UserQuery4) {
     return 'ok!';
   }
 }
