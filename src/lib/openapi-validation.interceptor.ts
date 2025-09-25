@@ -19,11 +19,11 @@ export class OpenApiValidationInterceptor
     const schema =
       this.openapi.paths[url][req.method.toLowerCase()].responses[
         res.statusCode ?? 200
-      ].content[
+      ]?.content?.[
         res.getHeader('content-type') ??
           req.headers['content-type'] ??
           'application/json'
-      ].schema;
+      ]?.schema;
 
     const dtoName = schema?.$ref?.split('/').pop();
     if (!dtoName) return next.handle();

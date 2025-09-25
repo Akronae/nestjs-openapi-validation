@@ -81,8 +81,11 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 // defined in nest-cli.json
 import metadata from './metadata';
 import { AppModule } from './app.module';
-import { OpenApiValidationInterceptor } from 'nestjs-openapi-validation';
-import { OpenApiValidationPipe } from 'nestjs-openapi-validation';
+import {
+  OpenApiValidationInterceptor,
+  OpenApiValidationPipe,
+  getRegisteredOpenApiModels,
+} from 'nestjs-openapi-validation';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -94,7 +97,11 @@ async function bootstrap() {
     .build();
 
   await SwaggerModule.loadPluginMetadata(metadata);
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, config, {
+    // Include models registered with @OpenApiRegister()
+    extraModels: getRegisteredOpenApiModels(),
+  });
+  SwaggerModule.setup('api', app, document);
 
   // Validate user input
   app.useGlobalPipes(
@@ -116,6 +123,7 @@ async function bootstrap() {
 ```typescript
 // user.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
+import { OpenApiRegister } from 'nestjs-openapi-validation';
 
 export enum UserRole {
   ADMIN = 'admin',
@@ -143,6 +151,15 @@ export class CreateUserDto {
   phone: string;
 
   tags?: string[];
+}
+
+// For DTOs not automatically discovered by the Swagger plugin
+@OpenApiRegister()
+export class SpecialUserDto {
+  @ApiProperty({ minimum: 0, maximum: 120 })
+  age?: number;
+
+  name: string;
 }
 ```
 
@@ -239,6 +256,40 @@ export class ProductDto {
 ### More
 
 Check [src/modules/app/app.dto.ts](https://github.com/Akronae/nestjs-openapi-validation/blob/main/src/modules/app/app.dto.ts) to see all tested features.
+
+## Registering Models
+
+If you see an error like:
+
+```
+YourDto is not registered in your OpenAPI document. Use `@OpenApiRegister()` on your DTO to register it.
+```
+
+it means the DTO is not automatically discovered by the NestJS Swagger plugin. This commonly happens when the DTO is only referenced in unions (`oneOf`), used in dynamic contexts, lives outside of scanned modules, or is only used as an input query and never returned.
+
+Use the `@OpenApiRegister()` decorator on such DTOs, and pass the registered models to Swagger via `extraModels`:
+
+```ts
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  OpenApiRegister,
+  getRegisteredOpenApiModels,
+} from 'nestjs-openapi-validation';
+
+@OpenApiRegister()
+export class CustomDto {
+  name: string;
+  @ApiProperty({ minimum: 0, maximum: 120 })
+  age?: number;
+}
+
+// main.ts (excerpt)
+const document = SwaggerModule.createDocument(app, config, {
+  extraModels: getRegisteredOpenApiModels(),
+});
+```
+
+Once registered, request/response validation will work as expected for these models.
 
 ## 📊 Validation Support Matrix
 

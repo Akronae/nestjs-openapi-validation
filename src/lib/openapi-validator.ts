@@ -1,5 +1,6 @@
 import { BadRequestException, Paramtype } from '@nestjs/common';
 import { OpenAPIObject } from '@nestjs/swagger';
+import { SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { mapEntries } from 'radash';
 import z, { ZodType } from 'zod';
 
@@ -63,11 +64,13 @@ export class OpenApiValidator {
 
   getZodSchema(dtoName: string) {
     const tsschema = this.schemata[dtoName];
-    const openapischema = this.openapi.components?.schemas[dtoName];
+    const openapischema = this.openapi.components?.schemas[
+      dtoName
+    ] as SchemaObject;
 
     const zodSchema = z.object({
       ...mapEntries(tsschema, (k, v) => {
-        const prop = (openapischema as any).properties[k];
+        const prop = openapischema.properties[k] as OpenApiProp;
         const val = this.openapiPropToZod(prop, v);
 
         if (!val) {

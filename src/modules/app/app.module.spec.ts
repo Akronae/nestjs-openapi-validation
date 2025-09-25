@@ -6,10 +6,11 @@ import {
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
+import { getRegisteredOpenApiModels } from '../../lib/openapi-register.decorator';
 import { OpenApiValidationInterceptor } from '../../lib/openapi-validation.interceptor';
 import { OpenApiValidationPipe } from '../../lib/openapi-validation.pipe';
 import metadata from '../../metadata';
-import { UserQuery1, UserQuery2 } from '../users/users.dto';
+import { UserQuery1, UserQuery2, UserQuery3 } from '../users/users.dto';
 import { UsersModule } from '../users/users.module';
 import { Query10, Query6, Query7, Query8, Query9 } from './app.dto';
 import { AppModule } from './app.module';
@@ -37,7 +38,9 @@ describe('AppController (e2e)', () => {
       .build();
 
     await SwaggerModule.loadPluginMetadata(metadata);
-    const document = SwaggerModule.createDocument(app, config);
+    const document = SwaggerModule.createDocument(app, config, {
+      extraModels: getRegisteredOpenApiModels(),
+    });
     SwaggerModule.setup('api', app, document);
 
     const validatorPipe = new OpenApiValidationPipe(metadata, document);
@@ -752,8 +755,6 @@ describe('AppController (e2e)', () => {
     expect(res.body).toMatchSnapshot();
   });
 
-  // ====
-
   it('/users/query_2 fail (POST)', async () => {
     const res = await request(app.getHttpServer()).post('/v1/users/query_2');
     expect(res.status).toBe(400);
@@ -816,6 +817,43 @@ describe('AppController (e2e)', () => {
         options: { all: 'yes' },
       } satisfies UserQuery2);
     expect(res.status).toBe(201);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_3 fail (GET)', async () => {
+    const res = await request(app.getHttpServer()).get('/v1/users/query_3');
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_3 fail (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_3')
+      .query({
+        a: 'lala',
+        b: -12,
+      });
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_3 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_3')
+      .query({
+        a: 'lala',
+      } satisfies UserQuery3);
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/users/query_3 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_3')
+      .query({
+        a: 'lala',
+        b: 34,
+      } satisfies UserQuery3);
+    expect(res.status).toBe(200);
     expect(res.body).toMatchSnapshot();
   });
 });
