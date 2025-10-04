@@ -7,15 +7,16 @@ export class OpenApiValidationPipe
   implements PipeTransform
 {
   transform(value: any, metadata: ArgumentMetadata) {
-    const dtoName = metadata.metatype?.name;
-    if (!dtoName || !this.schemata[dtoName]) return value;
+    const dto = metadata.metatype?.name;
 
-    if (!this.openapi.components?.schemas[dtoName]) {
+    if (!dto || !this.schemata[dto]) return value;
+
+    if (!this.openapi.components?.schemas[dto]) {
       throw new Error(
-        `${dtoName} is not registered in your OpenAPI document. Use \`@OpenApiRegister()\` on your DTO to register it. More info: https://github.com/Akronae/nestjs-openapi-validation?tab=readme-ov-file#registering-models.`,
+        `${dto} is not registered in your OpenAPI document. Use \`@OpenApiRegister()\` on your DTO to register it. More info: https://github.com/Akronae/nestjs-openapi-validation?tab=readme-ov-file#registering-models.`,
       );
     }
 
-    return this.validate(value, dtoName, metadata.type);
+    return this.validate(value, { dto }, metadata.type);
   }
 }

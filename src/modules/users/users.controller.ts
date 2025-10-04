@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { UserQuery1, UserQuery2, UserQuery3, UserQuery4 } from './users.dto';
 
 @Controller({
@@ -32,5 +32,19 @@ export class UsersController {
   @Get('query_4')
   getQuery4(@Query() _query: UserQuery4) {
     return 'ok!';
+  }
+
+  @Get('query_5/:id')
+  getQuery5(
+    @Param('id') id: number,
+    @Query('required') required: string,
+    @Query('optional') optional?: string,
+  ) {
+    return {
+      required,
+      optional,
+      id,
+      lol: 1,
+    };
   }
 }

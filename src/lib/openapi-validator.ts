@@ -2,7 +2,7 @@ import { BadRequestException, Paramtype } from '@nestjs/common';
 import { OpenAPIObject } from '@nestjs/swagger';
 import { SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { mapEntries } from 'radash';
-import z, { ZodType } from 'zod';
+import z, { ZodSchema, ZodType } from 'zod';
 
 type OpenApiProp = {
   type?: string;
@@ -51,8 +51,13 @@ export class OpenApiValidator {
     });
   }
 
-  validate(value: any, dtoName: string, type: Paramtype | 'response') {
-    const zodSchema = this.getZodSchema(dtoName);
+  validate(
+    value: any,
+    schema: { dto: string } | ZodSchema,
+    type: Paramtype | 'response',
+  ) {
+    const zodSchema =
+      schema instanceof ZodSchema ? schema : this.getZodSchema(schema.dto);
     const res = zodSchema.safeParse(value);
 
     if (!res.success) {

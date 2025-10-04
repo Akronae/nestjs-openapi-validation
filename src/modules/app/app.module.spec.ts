@@ -885,4 +885,45 @@ describe('AppController (e2e)', () => {
     expect(res.status).toBe(200);
     expect(res.body).toMatchSnapshot();
   });
+
+  it('/users/query_5 fail (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_5/hi')
+      .query({
+        required: 'lala',
+      });
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_5 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_5/453')
+      .query({
+        required: 'hello',
+      });
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({
+      required: 'hello',
+      id: 453,
+      lol: 1,
+    });
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/users/query_5 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_5/00023')
+      .query({
+        required: 'hi',
+        optional: 'world',
+      });
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({
+      required: 'hi',
+      optional: 'world',
+      id: 23,
+      lol: 1,
+    });
+    expect(res.body).toMatchSnapshot();
+  });
 });

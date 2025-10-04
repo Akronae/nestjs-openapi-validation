@@ -1964,6 +1964,44 @@ exports[`AppController (e2e) /users/query_4 success (GET) 1`] = `{}`;
 
 exports[`AppController (e2e) /users/query_4 success (GET) 2`] = `{}`;
 
+exports[`AppController (e2e) /users/query_5 fail (GET) 1`] = `
+{
+  "error": {
+    "param": {
+      "issues": [
+        {
+          "code": "invalid_type",
+          "expected": "number",
+          "message": "Expected number, received nan",
+          "path": [
+            "id",
+          ],
+          "received": "nan",
+        },
+      ],
+      "name": "ZodError",
+    },
+  },
+}
+`;
+
+exports[`AppController (e2e) /users/query_5 success (GET) 1`] = `
+{
+  "id": 453,
+  "lol": 1,
+  "required": "hello",
+}
+`;
+
+exports[`AppController (e2e) /users/query_5 success (GET) 2`] = `
+{
+  "id": 23,
+  "lol": 1,
+  "optional": "world",
+  "required": "hi",
+}
+`;
+
 exports[`AppController (e2e) /users/response_1 fail (GET) 1`] = `
 {
   "error": {
