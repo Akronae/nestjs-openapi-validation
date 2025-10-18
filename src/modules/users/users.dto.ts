@@ -27,3 +27,8 @@ export class UserQuery3 {
 export class UserQuery4 {
   required: string;
 }
+
+@OpenApiRegister()
+export class UserQuery6 {
+  force?: boolean;
+}

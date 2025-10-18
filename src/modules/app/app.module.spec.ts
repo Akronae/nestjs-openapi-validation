@@ -926,4 +926,40 @@ describe('AppController (e2e)', () => {
     });
     expect(res.body).toMatchSnapshot();
   });
+
+  it('/users/query_6 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_6')
+      .query({});
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({});
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_6 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_6')
+      .query({ force: 'true' });
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ force: true });
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_6 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_6')
+      .query({ force: true });
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ force: true });
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_6 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_6')
+      .query({ force: false });
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ force: false });
+    expect(res.body).toMatchSnapshot();
+  });
 });

@@ -119,6 +119,13 @@ export class OpenApiValidator {
             ? z.array(this.openapiPropToZod(prop.items, opts))
             : null;
 
+      if (type == 'boolean') {
+        val = z.preprocess(
+          (val) => String(val).toLowerCase() === 'true',
+          z.boolean(),
+        );
+      }
+
       if (type == 'object') {
         val = z.object(
           mapEntries(prop.properties, (k, v) => [

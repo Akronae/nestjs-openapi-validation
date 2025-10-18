@@ -2002,6 +2002,26 @@ exports[`AppController (e2e) /users/query_5 success (GET) 2`] = `
 }
 `;
 
+exports[`AppController (e2e) /users/query_6 success (GET) 1`] = `{}`;
+
+exports[`AppController (e2e) /users/query_6 success (GET) 2`] = `
+{
+  "force": true,
+}
+`;
+
+exports[`AppController (e2e) /users/query_6 success (GET) 3`] = `
+{
+  "force": true,
+}
+`;
+
+exports[`AppController (e2e) /users/query_6 success (GET) 4`] = `
+{
+  "force": false,
+}
+`;
+
 exports[`AppController (e2e) /users/response_1 fail (GET) 1`] = `
 {
   "error": {
