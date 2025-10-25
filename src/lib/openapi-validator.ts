@@ -136,11 +136,19 @@ export class OpenApiValidator {
       }
 
       if (prop.format) {
-        let format = prop.format;
-        if (format == 'date-time') format = 'datetime';
-
-        if (val[format]) {
-          val = val[format]();
+        if (prop.format.includes('date')) {
+          val = z.coerce.date().transform((str, ctx) => {
+            const date = new Date(str);
+            if (!z.date().safeParse(date).success) {
+              console.log({ date });
+              ctx.addIssue({
+                code: z.ZodIssueCode.invalid_date,
+              });
+            }
+            return date;
+          });
+        } else if (val[prop.format]) {
+          val = val[prop.format]();
         }
       }
 

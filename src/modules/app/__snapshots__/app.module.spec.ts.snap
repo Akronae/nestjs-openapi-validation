@@ -15,21 +15,11 @@ exports[`AppController (e2e) /query_1 fail (GET) 1`] = `
           "received": "undefined",
         },
         {
-          "code": "invalid_string",
-          "message": "Invalid datetime",
+          "code": "invalid_date",
+          "message": "Invalid date",
           "path": [
             "date",
           ],
-          "validation": "datetime",
-        },
-        {
-          "code": "invalid_type",
-          "expected": "string",
-          "message": "required",
-          "path": [
-            "date",
-          ],
-          "received": "undefined",
         },
         {
           "code": "invalid_type",
@@ -50,6 +40,30 @@ exports[`AppController (e2e) /query_1 fail (GET) 1`] = `
 exports[`AppController (e2e) /query_1 success (GET) 1`] = `
 {
   "date": "2025-01-01T00:00:00.000Z",
+  "nbr1": 123,
+  "str1": "lala",
+}
+`;
+
+exports[`AppController (e2e) /query_1 success (GET) 2`] = `
+{
+  "date": "2025-01-01T00:00:00.000Z",
+  "nbr1": 123,
+  "str1": "lala",
+}
+`;
+
+exports[`AppController (e2e) /query_1 success (GET) 3`] = `
+{
+  "date": "2025-03-01T00:00:00.000Z",
+  "nbr1": 123,
+  "str1": "lala",
+}
+`;
+
+exports[`AppController (e2e) /query_1 success (GET) 4`] = `
+{
+  "date": "2025-12-24T00:00:00.000Z",
   "nbr1": 123,
   "str1": "lala",
 }
@@ -174,23 +188,12 @@ exports[`AppController (e2e) /query_4 fail (GET) 1`] = `
           "received": "undefined",
         },
         {
-          "code": "invalid_string",
-          "message": "Invalid datetime",
+          "code": "invalid_date",
+          "message": "Invalid date",
           "path": [
             "query1",
             "date",
           ],
-          "validation": "datetime",
-        },
-        {
-          "code": "invalid_type",
-          "expected": "string",
-          "message": "required",
-          "path": [
-            "query1",
-            "date",
-          ],
-          "received": "undefined",
         },
         {
           "code": "invalid_type",
@@ -266,14 +269,13 @@ exports[`AppController (e2e) /query_5 fail (POST) 1`] = `
     "body": {
       "issues": [
         {
-          "code": "invalid_string",
-          "message": "Invalid datetime",
+          "code": "invalid_date",
+          "message": "Invalid date",
           "path": [
             "query4",
             "query1",
             "date",
           ],
-          "validation": "datetime",
         },
         {
           "code": "invalid_union",
@@ -945,21 +947,11 @@ exports[`AppController (e2e) /response_1 fail (GET) 1`] = `
           "received": "undefined",
         },
         {
-          "code": "invalid_string",
-          "message": "Invalid datetime",
+          "code": "invalid_date",
+          "message": "Invalid date",
           "path": [
             "date",
           ],
-          "validation": "datetime",
-        },
-        {
-          "code": "invalid_type",
-          "expected": "string",
-          "message": "required",
-          "path": [
-            "date",
-          ],
-          "received": "undefined",
         },
         {
           "code": "invalid_type",
@@ -1104,23 +1096,12 @@ exports[`AppController (e2e) /response_4 fail (GET) 1`] = `
           "received": "undefined",
         },
         {
-          "code": "invalid_string",
-          "message": "Invalid datetime",
+          "code": "invalid_date",
+          "message": "Invalid date",
           "path": [
             "query1",
             "date",
           ],
-          "validation": "datetime",
-        },
-        {
-          "code": "invalid_type",
-          "expected": "string",
-          "message": "required",
-          "path": [
-            "query1",
-            "date",
-          ],
-          "received": "undefined",
         },
         {
           "code": "invalid_type",
@@ -1258,14 +1239,13 @@ exports[`AppController (e2e) /response_5 fail (POST) 1`] = `
     "response": {
       "issues": [
         {
-          "code": "invalid_string",
-          "message": "Invalid datetime",
+          "code": "invalid_date",
+          "message": "Invalid date",
           "path": [
             "query4",
             "query1",
             "date",
           ],
-          "validation": "datetime",
         },
         {
           "code": "invalid_type",

@@ -71,6 +71,43 @@ describe('AppController (e2e)', () => {
     expect(res.body).toMatchSnapshot();
   });
 
+  it('/query_1 success (GET)', async () => {
+    const res = await request(app.getHttpServer()).get('/v1/query_1').query({
+      str1: 'lala',
+      date: '2025',
+      nbr1: 123,
+    });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/query_1 success (GET)', async () => {
+    const res = await request(app.getHttpServer()).get('/v1/query_1').query({
+      str1: 'lala',
+      date: '2025-03',
+      nbr1: 123,
+    });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/query_1 success (GET)', async () => {
+    const res = await request(app.getHttpServer()).get('/v1/query_1').query({
+      str1: 'lala',
+      date: '2025-12-24',
+      nbr1: 123,
+    });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/query_1 success (GET)', async () => {
+    const res = await request(app.getHttpServer()).get('/v1/query_1').query({
+      str1: 'lala',
+      date: 1761407099626,
+      nbr1: 123,
+    });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+
   it('/query_2 fail (GET)', async () => {
     const res = await request(app.getHttpServer()).get('/v1/query_2').query({
       str1: 'lala',
