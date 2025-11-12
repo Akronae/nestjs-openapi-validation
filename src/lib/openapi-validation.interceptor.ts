@@ -7,6 +7,7 @@ import {
 import { mapEntries } from 'radash';
 import { Observable, map } from 'rxjs';
 import z from 'zod';
+import { getIgnoredOpenApiModels } from './openapi-ignore.decorator';
 import { OpenApiValidator } from './openapi-validator';
 
 @Injectable()
@@ -38,7 +39,7 @@ export class OpenApiValidationInterceptor
       req.params = this.validate(req.params, zReqParams, 'param');
     }
 
-    if (!dto) return next.handle();
+    if (!dto || getIgnoredOpenApiModels().includes(dto)) return next.handle();
 
     return next.handle().pipe(
       map((data) => {

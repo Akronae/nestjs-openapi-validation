@@ -99,11 +99,13 @@ describe('AppController (e2e)', () => {
     expect(res.body).toMatchSnapshot();
   });
   it('/query_1 success (GET)', async () => {
-    const res = await request(app.getHttpServer()).get('/v1/query_1').query({
-      str1: 'lala',
-      date: 1761407099626,
-      nbr1: 123,
-    });
+    const res = await request(app.getHttpServer())
+      .get('/v1/query_1')
+      .query({
+        str1: 'lala',
+        date: new Date(1761407099626),
+        nbr1: 123,
+      });
     expect(res.status).toBe(200);
     expect(res.body).toMatchSnapshot();
   });
@@ -997,6 +999,30 @@ describe('AppController (e2e)', () => {
       .query({ force: false });
     expect(res.status).toBe(200);
     expect(res.body).toEqual({ force: false });
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_7 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_7')
+      .query({ name: 'hello', info: { age: 34 } });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_7 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_7')
+      .query({ name: 'hello', info: 'lol' });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_7 fail (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_7')
+      .query({ name: { ok: 1 }, info: { age: 23 } });
+    expect(res.status).toBe(400);
     expect(res.body).toMatchSnapshot();
   });
 });

@@ -69,6 +69,14 @@ exports[`AppController (e2e) /query_1 success (GET) 4`] = `
 }
 `;
 
+exports[`AppController (e2e) /query_1 success (GET) 5`] = `
+{
+  "date": "2025-10-25T15:44:59.000Z",
+  "nbr1": 123,
+  "str1": "lala",
+}
+`;
+
 exports[`AppController (e2e) /query_2 fail (GET) 1`] = `
 {
   "error": {
@@ -1999,6 +2007,43 @@ exports[`AppController (e2e) /users/query_6 success (GET) 3`] = `
 exports[`AppController (e2e) /users/query_6 success (GET) 4`] = `
 {
   "force": false,
+}
+`;
+
+exports[`AppController (e2e) /users/query_7 fail (GET) 1`] = `
+{
+  "error": {
+    "query": {
+      "issues": [
+        {
+          "code": "invalid_type",
+          "expected": "string",
+          "message": "Expected string, received object",
+          "path": [
+            "name",
+          ],
+          "received": "object",
+        },
+      ],
+      "name": "ZodError",
+    },
+  },
+}
+`;
+
+exports[`AppController (e2e) /users/query_7 success (GET) 1`] = `
+{
+  "info": {
+    "age": "34",
+  },
+  "name": "hello",
+}
+`;
+
+exports[`AppController (e2e) /users/query_7 success (GET) 2`] = `
+{
+  "info": "lol",
+  "name": "hello",
 }
 `;
 

@@ -265,6 +265,10 @@ it means the DTO is not automatically discovered by the NestJS Swagger plugin. T
 
 Use the `@OpenApiRegister()` decorator on such DTOs, and pass the registered models to Swagger via `extraModels`:
 
+## Ignoring Models
+
+Use the `@OpenApiIgnore()` to skip specific model validation.
+
 ```ts
 import { ApiProperty } from '@nestjs/swagger';
 import {

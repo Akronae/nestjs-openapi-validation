@@ -3,6 +3,7 @@ import { OpenAPIObject } from '@nestjs/swagger';
 import { SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { mapEntries } from 'radash';
 import z, { ZodSchema, ZodType } from 'zod';
+import { getIgnoredOpenApiModels } from './openapi-ignore.decorator';
 
 type OpenApiProp = {
   type?: string;
@@ -68,10 +69,27 @@ export class OpenApiValidator {
   }
 
   getZodSchema(dtoName: string) {
-    const tsschema = this.schemata[dtoName];
+    if (getIgnoredOpenApiModels().includes(dtoName)) return z.any();
+
+    let tsschema = this.schemata[dtoName];
     const openapischema = this.openapi.components?.schemas[
       dtoName
     ] as SchemaObject;
+
+    if (
+      Object.keys(tsschema).length == 0 &&
+      Object.keys(openapischema.properties).length > 0
+    ) {
+      tsschema = mapEntries(openapischema.properties, (k, v) => {
+        return [
+          k,
+          {
+            required: openapischema.required.includes(k),
+            type: () => ({ name: (v as SchemaObject).type }),
+          },
+        ];
+      });
+    }
 
     const zodSchema = z.object({
       ...mapEntries(tsschema, (k, v) => {
@@ -137,16 +155,7 @@ export class OpenApiValidator {
 
       if (prop.format) {
         if (prop.format.includes('date')) {
-          val = z.coerce.date().transform((str, ctx) => {
-            const date = new Date(str);
-            if (!z.date().safeParse(date).success) {
-              console.log({ date });
-              ctx.addIssue({
-                code: z.ZodIssueCode.invalid_date,
-              });
-            }
-            return date;
-          });
+          val = safeDate;
         } else if (val[prop.format]) {
           val = val[prop.format]();
         }
@@ -173,6 +182,10 @@ export class OpenApiValidator {
       }
     }
 
+    if (type == 'string') {
+      val = safeString(val);
+    }
+
     if (!val) {
       return null;
     }
@@ -194,3 +207,35 @@ const requiredrefine = (x: any, type: string) =>
       });
     }
   });
+
+const safeDate = z.coerce.date().transform((str, ctx) => {
+  const date = new Date(str);
+  if (!z.date().safeParse(date).success) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.invalid_date,
+    });
+  }
+  return date;
+});
+
+const safeString = (schema: z.ZodTypeAny) =>
+  z.preprocess((val, ctx) => {
+    if (typeof val === 'string') return val;
+    if (
+      typeof val === 'number' ||
+      typeof val === 'boolean' ||
+      val instanceof Date
+    )
+      return String(val);
+
+    if (val != null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.invalid_type,
+        expected: 'string',
+        received: typeof val,
+        message: `Expected string, received ${typeof val}`,
+      });
+    }
+
+    return val;
+  }, schema);

@@ -5,6 +5,7 @@ import {
   UserQuery3,
   UserQuery4,
   UserQuery6,
+  UserQuery7,
 } from './users.dto';
 
 @Controller({
@@ -56,6 +57,11 @@ export class UsersController {
 
   @Get('query_6')
   getQuery6(@Query() query: UserQuery6) {
+    return query;
+  }
+
+  @Get('query_7')
+  getQuery7(@Query() query: UserQuery7) {
     return query;
   }
 }

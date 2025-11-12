@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { OpenApiIgnore } from '../../lib/openapi-ignore.decorator';
 import { OpenApiRegister } from '../../lib/openapi-register.decorator';
 
 export class UserQuery1 {
@@ -31,4 +32,15 @@ export class UserQuery4 {
 @OpenApiRegister()
 export class UserQuery6 {
   force?: boolean;
+}
+
+@OpenApiRegister()
+export class UserQuery7 {
+  name: string;
+  info: UserQuery7Info;
+}
+
+@OpenApiIgnore()
+export class UserQuery7Info {
+  age: number;
 }
