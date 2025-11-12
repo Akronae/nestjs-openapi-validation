@@ -6,6 +6,7 @@ import {
   UserQuery4,
   UserQuery6,
   UserQuery7,
+  UserQuery8,
 } from './users.dto';
 
 @Controller({
@@ -62,6 +63,14 @@ export class UsersController {
 
   @Get('query_7')
   getQuery7(@Query() query: UserQuery7) {
+    return query;
+  }
+
+  @Get('query_8')
+  getQuery8(@Query() query: UserQuery8) {
+    if (query.info.name === 'send null girls') {
+      query.info.name = null;
+    }
     return query;
   }
 }

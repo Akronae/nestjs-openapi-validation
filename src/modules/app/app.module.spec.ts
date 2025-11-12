@@ -1025,4 +1025,29 @@ describe('AppController (e2e)', () => {
     expect(res.status).toBe(400);
     expect(res.body).toMatchSnapshot();
   });
+
+  it('/users/query_8 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_8')
+      .query({ info: { name: 'ok' } });
+    expect(res.body).toEqual({ info: { name: 'ok' } });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/users/query_8 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_8')
+      .query({ info: { name: undefined, _: 1 } });
+    expect(res.body).toEqual({ info: { name: undefined } });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/users/query_8 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_8')
+      .query({ info: { name: 'send null girls' } });
+    expect(res.body).toEqual({ info: { name: null } });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
 });

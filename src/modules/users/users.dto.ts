@@ -44,3 +44,12 @@ export class UserQuery7 {
 export class UserQuery7Info {
   age: number;
 }
+
+export class UserQuery8Info {
+  name?: string | null;
+}
+
+@OpenApiRegister()
+export class UserQuery8 {
+  info: UserQuery8Info;
+}

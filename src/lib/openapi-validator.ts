@@ -26,6 +26,7 @@ type DeepArray<T> = T | DeepArray<T>[];
 type PropType<T = { name: string }> = {
   type: () => DeepArray<T> | Record<string | number, PropType<T>>;
   required: boolean;
+  nullable?: boolean;
 };
 
 export class OpenApiValidatorError extends Error {}
@@ -191,6 +192,10 @@ export class OpenApiValidator {
     }
     if (opts.required === false) val = val.optional();
     else val = requiredrefine(val, type);
+
+    if (opts.nullable) {
+      val = z.null().or(val);
+    }
 
     return val as ZodType;
   }
