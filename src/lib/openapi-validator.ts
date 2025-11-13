@@ -111,6 +111,8 @@ export class OpenApiValidator {
   }
 
   openapiPropToZod(prop: OpenApiProp, opts: Partial<PropType>): ZodType {
+    opts ??= {};
+
     if (prop.oneOf?.length > 1) {
       return z.union(
         prop.oneOf.map((o) => this.openapiPropToZod(o, { required: true })) as [
