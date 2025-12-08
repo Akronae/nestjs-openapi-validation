@@ -53,3 +53,12 @@ export class UserQuery8Info {
 export class UserQuery8 {
   info: UserQuery8Info;
 }
+
+@OpenApiRegister()
+export class UserQuery9 {
+  name: string;
+  @ApiProperty({ enum: ['online', 'offline', 'null'], nullable: true })
+  status?: 'online' | 'offline' | 'null';
+  @ApiProperty({ enum: ['user', 'admin'] })
+  type: 'user' | 'admin';
+}

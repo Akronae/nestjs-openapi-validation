@@ -19,6 +19,7 @@ type OpenApiProp = {
   pattern?: string;
   properties?: Record<string, OpenApiProp>;
   required?: boolean;
+  nullable?: boolean;
 };
 
 type DeepArray<T> = T | DeepArray<T>[];
@@ -195,7 +196,7 @@ export class OpenApiValidator {
     if (opts.required === false) val = val.optional();
     else val = requiredrefine(val, type);
 
-    if (opts.nullable) {
+    if (opts.nullable || prop.nullable) {
       val = z.null().or(val);
     }
 

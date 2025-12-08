@@ -1050,4 +1050,36 @@ describe('AppController (e2e)', () => {
     expect(res.status).toBe(200);
     expect(res.body).toMatchSnapshot();
   });
+
+  it('/users/query_9 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_9')
+      .query({ name: 'luke', status: 'online', type: 'user' });
+    expect(res.body).toEqual({ name: 'luke', status: 'online', type: 'user' });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/users/query_9 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_9')
+      .query({ name: 'luke', type: 'admin' });
+    expect(res.body).toEqual({ name: 'luke', type: 'admin' });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/users/query_9 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_9')
+      .query({ name: 'luke', type: 'admin', status: 'null' });
+    expect(res.body).toEqual({ name: 'luke', type: 'admin', status: null });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/users/query_9 fail (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_9')
+      .query({ name: 'luke', status: 'offline' });
+    expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
 });
