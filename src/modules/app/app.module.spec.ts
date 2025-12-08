@@ -8,6 +8,7 @@ import { OpenApiValidationPipe } from '../../lib/openapi-validation.pipe';
 import metadata from '../../metadata';
 import {
   UserQuery1,
+  UserQuery10,
   UserQuery2,
   UserQuery3,
   UserQuery4,
@@ -1080,6 +1081,25 @@ describe('AppController (e2e)', () => {
       .get('/v1/users/query_9')
       .query({ name: 'luke', status: 'offline' });
     expect(res.status).toBe(400);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_10 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_10')
+      .query({
+        name: 'john',
+        type: 'admin',
+        pet: 'dog',
+        books: ['book1', 'book2'],
+      } satisfies UserQuery10);
+    expect(res.body).toEqual({
+      name: 'john',
+      type: 'admin',
+      pet: 'dog',
+      books: ['book1', 'book2'],
+    });
+    expect(res.status).toBe(200);
     expect(res.body).toMatchSnapshot();
   });
 });

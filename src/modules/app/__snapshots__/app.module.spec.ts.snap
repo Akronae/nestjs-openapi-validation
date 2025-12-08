@@ -84,21 +84,21 @@ exports[`AppController (e2e) /query_2 fail (GET) 1`] = `
       "issues": [
         {
           "code": "invalid_type",
-          "expected": "number",
-          "message": "Expected number, received nan",
-          "path": [
-            "nbr1",
-          ],
-          "received": "nan",
-        },
-        {
-          "code": "invalid_type",
           "expected": "'A' | 'B' | 'C'",
           "message": "Required",
           "path": [
             "enum1",
           ],
           "received": "undefined",
+        },
+        {
+          "code": "invalid_type",
+          "expected": "number",
+          "message": "Expected number, received nan",
+          "path": [
+            "nbr1",
+          ],
+          "received": "nan",
         },
       ],
       "name": "ZodError",
@@ -186,34 +186,6 @@ exports[`AppController (e2e) /query_4 fail (GET) 1`] = `
     "query": {
       "issues": [
         {
-          "code": "invalid_type",
-          "expected": "string",
-          "message": "required",
-          "path": [
-            "query1",
-            "str1",
-          ],
-          "received": "undefined",
-        },
-        {
-          "code": "invalid_date",
-          "message": "Invalid date",
-          "path": [
-            "query1",
-            "date",
-          ],
-        },
-        {
-          "code": "invalid_type",
-          "expected": "number",
-          "message": "Expected number, received nan",
-          "path": [
-            "query1",
-            "nbr1",
-          ],
-          "received": "nan",
-        },
-        {
           "code": "invalid_union",
           "message": "Invalid input",
           "path": [
@@ -249,6 +221,34 @@ exports[`AppController (e2e) /query_4 fail (GET) 1`] = `
               "name": "ZodError",
             },
           ],
+        },
+        {
+          "code": "invalid_type",
+          "expected": "string",
+          "message": "required",
+          "path": [
+            "query1",
+            "str1",
+          ],
+          "received": "undefined",
+        },
+        {
+          "code": "invalid_date",
+          "message": "Invalid date",
+          "path": [
+            "query1",
+            "date",
+          ],
+        },
+        {
+          "code": "invalid_type",
+          "expected": "number",
+          "message": "Expected number, received nan",
+          "path": [
+            "query1",
+            "nbr1",
+          ],
+          "received": "nan",
         },
       ],
       "name": "ZodError",
@@ -277,15 +277,6 @@ exports[`AppController (e2e) /query_5 fail (POST) 1`] = `
     "body": {
       "issues": [
         {
-          "code": "invalid_date",
-          "message": "Invalid date",
-          "path": [
-            "query4",
-            "query1",
-            "date",
-          ],
-        },
-        {
           "code": "invalid_union",
           "message": "Invalid input",
           "path": [
@@ -295,17 +286,6 @@ exports[`AppController (e2e) /query_5 fail (POST) 1`] = `
           "unionErrors": [
             {
               "issues": [
-                {
-                  "code": "invalid_type",
-                  "expected": "number",
-                  "message": "Expected number, received nan",
-                  "path": [
-                    "query4",
-                    "field2",
-                    "nbr1",
-                  ],
-                  "received": "nan",
-                },
                 {
                   "code": "invalid_enum_value",
                   "message": "Invalid enum value. Expected 'A' | 'B' | 'C', received 'D'",
@@ -320,6 +300,17 @@ exports[`AppController (e2e) /query_5 fail (POST) 1`] = `
                     "enum1",
                   ],
                   "received": "D",
+                },
+                {
+                  "code": "invalid_type",
+                  "expected": "number",
+                  "message": "Expected number, received nan",
+                  "path": [
+                    "query4",
+                    "field2",
+                    "nbr1",
+                  ],
+                  "received": "nan",
                 },
               ],
               "name": "ZodError",
@@ -382,6 +373,15 @@ exports[`AppController (e2e) /query_5 fail (POST) 1`] = `
             },
           ],
         },
+        {
+          "code": "invalid_date",
+          "message": "Invalid date",
+          "path": [
+            "query4",
+            "query1",
+            "date",
+          ],
+        },
       ],
       "name": "ZodError",
     },
@@ -423,6 +423,22 @@ exports[`AppController (e2e) /query_6 fail (POST) 1`] = `
             {
               "issues": [
                 {
+                  "code": "invalid_enum_value",
+                  "message": "Invalid enum value. Expected 'A' | 'B' | 'C', received 'AAA'",
+                  "options": [
+                    "A",
+                    "B",
+                    "C",
+                  ],
+                  "path": [
+                    "arr",
+                    1,
+                    "field2",
+                    "enum1",
+                  ],
+                  "received": "AAA",
+                },
+                {
                   "code": "invalid_type",
                   "expected": "string",
                   "message": "required",
@@ -445,22 +461,6 @@ exports[`AppController (e2e) /query_6 fail (POST) 1`] = `
                     "nbr1",
                   ],
                   "received": "nan",
-                },
-                {
-                  "code": "invalid_enum_value",
-                  "message": "Invalid enum value. Expected 'A' | 'B' | 'C', received 'AAA'",
-                  "options": [
-                    "A",
-                    "B",
-                    "C",
-                  ],
-                  "path": [
-                    "arr",
-                    1,
-                    "field2",
-                    "enum1",
-                  ],
-                  "received": "AAA",
                 },
               ],
               "name": "ZodError",
@@ -992,21 +992,21 @@ exports[`AppController (e2e) /response_2 fail (GET) 1`] = `
       "issues": [
         {
           "code": "invalid_type",
-          "expected": "number",
-          "message": "Expected number, received nan",
-          "path": [
-            "nbr1",
-          ],
-          "received": "nan",
-        },
-        {
-          "code": "invalid_type",
           "expected": "'A' | 'B' | 'C'",
           "message": "Required",
           "path": [
             "enum1",
           ],
           "received": "undefined",
+        },
+        {
+          "code": "invalid_type",
+          "expected": "number",
+          "message": "Expected number, received nan",
+          "path": [
+            "nbr1",
+          ],
+          "received": "nan",
         },
       ],
       "name": "ZodError",
@@ -1094,34 +1094,6 @@ exports[`AppController (e2e) /response_4 fail (GET) 1`] = `
     "response": {
       "issues": [
         {
-          "code": "invalid_type",
-          "expected": "string",
-          "message": "required",
-          "path": [
-            "query1",
-            "str1",
-          ],
-          "received": "undefined",
-        },
-        {
-          "code": "invalid_date",
-          "message": "Invalid date",
-          "path": [
-            "query1",
-            "date",
-          ],
-        },
-        {
-          "code": "invalid_type",
-          "expected": "number",
-          "message": "Expected number, received nan",
-          "path": [
-            "query1",
-            "nbr1",
-          ],
-          "received": "nan",
-        },
-        {
           "code": "invalid_union",
           "message": "Invalid input",
           "path": [
@@ -1130,6 +1102,16 @@ exports[`AppController (e2e) /response_4 fail (GET) 1`] = `
           "unionErrors": [
             {
               "issues": [
+                {
+                  "code": "invalid_type",
+                  "expected": "'A' | 'B' | 'C'",
+                  "message": "Required",
+                  "path": [
+                    "field2",
+                    "enum1",
+                  ],
+                  "received": "undefined",
+                },
                 {
                   "code": "invalid_type",
                   "expected": "string",
@@ -1149,16 +1131,6 @@ exports[`AppController (e2e) /response_4 fail (GET) 1`] = `
                     "nbr1",
                   ],
                   "received": "nan",
-                },
-                {
-                  "code": "invalid_type",
-                  "expected": "'A' | 'B' | 'C'",
-                  "message": "Required",
-                  "path": [
-                    "field2",
-                    "enum1",
-                  ],
-                  "received": "undefined",
                 },
               ],
               "name": "ZodError",
@@ -1220,6 +1192,34 @@ exports[`AppController (e2e) /response_4 fail (GET) 1`] = `
             },
           ],
         },
+        {
+          "code": "invalid_type",
+          "expected": "string",
+          "message": "required",
+          "path": [
+            "query1",
+            "str1",
+          ],
+          "received": "undefined",
+        },
+        {
+          "code": "invalid_date",
+          "message": "Invalid date",
+          "path": [
+            "query1",
+            "date",
+          ],
+        },
+        {
+          "code": "invalid_type",
+          "expected": "number",
+          "message": "Expected number, received nan",
+          "path": [
+            "query1",
+            "nbr1",
+          ],
+          "received": "nan",
+        },
       ],
       "name": "ZodError",
     },
@@ -1247,26 +1247,6 @@ exports[`AppController (e2e) /response_5 fail (POST) 1`] = `
     "response": {
       "issues": [
         {
-          "code": "invalid_date",
-          "message": "Invalid date",
-          "path": [
-            "query4",
-            "query1",
-            "date",
-          ],
-        },
-        {
-          "code": "invalid_type",
-          "expected": "number",
-          "message": "Expected number, received nan",
-          "path": [
-            "query4",
-            "query1",
-            "nbr1",
-          ],
-          "received": "nan",
-        },
-        {
           "code": "invalid_union",
           "message": "Invalid input",
           "path": [
@@ -1276,17 +1256,6 @@ exports[`AppController (e2e) /response_5 fail (POST) 1`] = `
           "unionErrors": [
             {
               "issues": [
-                {
-                  "code": "invalid_type",
-                  "expected": "number",
-                  "message": "Expected number, received nan",
-                  "path": [
-                    "query4",
-                    "field2",
-                    "nbr1",
-                  ],
-                  "received": "nan",
-                },
                 {
                   "code": "invalid_enum_value",
                   "message": "Invalid enum value. Expected 'A' | 'B' | 'C', received 'Z'",
@@ -1301,6 +1270,17 @@ exports[`AppController (e2e) /response_5 fail (POST) 1`] = `
                     "enum1",
                   ],
                   "received": "Z",
+                },
+                {
+                  "code": "invalid_type",
+                  "expected": "number",
+                  "message": "Expected number, received nan",
+                  "path": [
+                    "query4",
+                    "field2",
+                    "nbr1",
+                  ],
+                  "received": "nan",
                 },
               ],
               "name": "ZodError",
@@ -1363,6 +1343,26 @@ exports[`AppController (e2e) /response_5 fail (POST) 1`] = `
             },
           ],
         },
+        {
+          "code": "invalid_date",
+          "message": "Invalid date",
+          "path": [
+            "query4",
+            "query1",
+            "date",
+          ],
+        },
+        {
+          "code": "invalid_type",
+          "expected": "number",
+          "message": "Expected number, received nan",
+          "path": [
+            "query4",
+            "query1",
+            "nbr1",
+          ],
+          "received": "nan",
+        },
       ],
       "name": "ZodError",
     },
@@ -1404,6 +1404,22 @@ exports[`AppController (e2e) /response_6 fail (POST) 1`] = `
             {
               "issues": [
                 {
+                  "code": "invalid_enum_value",
+                  "message": "Invalid enum value. Expected 'A' | 'B' | 'C', received 'INVALID'",
+                  "options": [
+                    "A",
+                    "B",
+                    "C",
+                  ],
+                  "path": [
+                    "arr",
+                    0,
+                    "field2",
+                    "enum1",
+                  ],
+                  "received": "INVALID",
+                },
+                {
                   "code": "invalid_type",
                   "expected": "string",
                   "message": "required",
@@ -1426,22 +1442,6 @@ exports[`AppController (e2e) /response_6 fail (POST) 1`] = `
                     "nbr1",
                   ],
                   "received": "nan",
-                },
-                {
-                  "code": "invalid_enum_value",
-                  "message": "Invalid enum value. Expected 'A' | 'B' | 'C', received 'INVALID'",
-                  "options": [
-                    "A",
-                    "B",
-                    "C",
-                  ],
-                  "path": [
-                    "arr",
-                    0,
-                    "field2",
-                    "enum1",
-                  ],
-                  "received": "INVALID",
                 },
               ],
               "name": "ZodError",
@@ -2109,6 +2109,18 @@ exports[`AppController (e2e) /users/query_9 success (GET) 3`] = `
 {
   "name": "luke",
   "status": null,
+  "type": "admin",
+}
+`;
+
+exports[`AppController (e2e) /users/query_10 success (GET) 1`] = `
+{
+  "books": [
+    "book1",
+    "book2",
+  ],
+  "name": "john",
+  "pet": "dog",
   "type": "admin",
 }
 `;

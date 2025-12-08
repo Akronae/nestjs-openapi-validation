@@ -94,9 +94,10 @@ export class OpenApiValidator {
     }
 
     const zodSchema = z.object({
-      ...mapEntries(tsschema, (k, v) => {
-        const prop = openapischema.properties[k] as OpenApiProp;
-        const val = this.openapiPropToZod(prop, v);
+      ...mapEntries(openapischema.properties, (k, v) => {
+        const ts = tsschema[k];
+        const prop = v as OpenApiProp;
+        const val = this.openapiPropToZod(prop, ts);
 
         if (!val) {
           throw new OpenApiValidatorError(

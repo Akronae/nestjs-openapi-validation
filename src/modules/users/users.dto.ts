@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { OpenApiIgnore } from '../../lib/openapi-ignore.decorator';
 import { OpenApiRegister } from '../../lib/openapi-register.decorator';
 
@@ -61,4 +61,18 @@ export class UserQuery9 {
   status?: 'online' | 'offline' | 'null';
   @ApiProperty({ enum: ['user', 'admin'] })
   type: 'user' | 'admin';
+}
+
+@OpenApiRegister()
+export class UserQuery10Part {
+  name: string;
+  age?: number;
+  @ApiProperty({ enum: ['user', 'admin'] })
+  type: 'user' | 'admin';
+  books?: string[];
+}
+
+@OpenApiRegister()
+export class UserQuery10 extends OmitType(UserQuery10Part, ['age']) {
+  pet: string;
 }
