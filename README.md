@@ -6,9 +6,52 @@
 [![Node.js](https://img.shields.io/badge/Node.js-16%2B-brightgreen)](https://nodejs.org/)
 [![NestJS](https://img.shields.io/badge/NestJS-10%2B-ea2845)](https://nestjs.com/)
 
-> **Seamlessly validate your NestJS APIs using OpenAPI schemas with the power of Zod** 🚀
+---
 
-Transform your OpenAPI specifications into runtime validation with zero configuration. This library automatically converts your Swagger/OpenAPI schemas into Zod validators, ensuring your API requests are validated against the same schema that generates your documentation.
+> **Stop repeating yourself. Validate your NestJS applications using only TypeScript and OpenAPI.**
+
+## Why use this?
+
+In a standard NestJS project, defining a single property often requires you to write it **three times**:
+
+1. **TypeScript:** `id: number;` (For type safety)
+2. **Validation:** `@IsInt()` (For `class-validator`)
+3. **Documentation:** `@ApiProperty()` (For Swagger/OpenAPI)
+
+This is redundant, error-prone, and a nightmare to maintain. **nestjs-openapi-validation** uses TypeScript inference to automatically generate validation rules and OpenAPI schemas. For most properties, **the TypeScript definition is enough.**
+
+---
+
+## The "Before vs. After"
+
+### ❌ The Standard Way (class-validator)
+
+You have to manually sync decorators for every single field. Missing one `@Expose()` or `@IsNumber()` breaks your API or documentation.
+
+```typescript
+class Item {
+  @Expose() // Needed for response transformation
+  @Type(() => Number) // Needed to ensure it's a number
+  @IsNumber() // Validation
+  @Min(0) // Logic
+  @ApiProperty({ minimum: 0 }) // Documentation
+  size?: number;
+}
+```
+
+### ✅ The `nestjs-openapi-validation` Way
+
+The library infers the validation and documentation from your types and the `@OpenApiRegister()` decorator.
+
+```typescript
+@OpenApiRegister()
+class Item {
+  @ApiProperty({ minimum: 0 }) // Only add what can't be inferred
+  size?: number;
+}
+```
+
+---
 
 ## ✨ Features
 

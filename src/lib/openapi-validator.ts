@@ -9,6 +9,7 @@ type OpenApiProp = {
   type?: string;
   enum?: [string, ...string[]];
   oneOf?: [OpenApiProp, OpenApiProp, ...OpenApiProp[]];
+  allOf?: [OpenApiProp, OpenApiProp, ...OpenApiProp[]];
   $ref?: string;
   items?: OpenApiProp;
   format?: string;
@@ -115,13 +116,26 @@ export class OpenApiValidator {
   openapiPropToZod(prop: OpenApiProp, opts: Partial<PropType>): ZodType {
     opts ??= {};
 
-    if (prop.oneOf?.length > 1) {
+    if (prop.oneOf?.length) {
+      if (prop.oneOf.length < 2) {
+        return this.openapiPropToZod(prop.oneOf[0], opts);
+      }
       return z.union(
         prop.oneOf.map((o) => this.openapiPropToZod(o, { required: true })) as [
           ZodType,
           ZodType,
           ...ZodType[],
         ],
+      );
+    }
+    if (prop.allOf?.length) {
+      if (prop.allOf.length < 2) {
+        return this.openapiPropToZod(prop.allOf[0], opts);
+      }
+      return z.intersection(
+        ...(prop.allOf.map((o) =>
+          this.openapiPropToZod(o, { required: true }),
+        ) as [ZodType, ZodType, ...ZodType[]]),
       );
     }
 
