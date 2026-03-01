@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import {
   UserQuery1,
   UserQuery10,
+  UserQuery11,
   UserQuery2,
   UserQuery3,
   UserQuery4,
@@ -86,6 +87,14 @@ export class UsersController {
 
   @Get('query_10')
   getQuery10(@Query() query: UserQuery10) {
+    return query;
+  }
+
+  @Get('query_11')
+  getQuery11(@Query() query: UserQuery11) {
+    if (!query.user.name) {
+      query.user.name = null;
+    }
     return query;
   }
 }

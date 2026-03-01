@@ -9,6 +9,7 @@ import metadata from '../../metadata';
 import {
   UserQuery1,
   UserQuery10,
+  UserQuery11,
   UserQuery2,
   UserQuery3,
   UserQuery4,
@@ -1098,6 +1099,31 @@ describe('AppController (e2e)', () => {
       type: 'admin',
       pet: 'dog',
       books: ['book1', 'book2'],
+    });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_11 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_11')
+      .query({
+        user: { name: 'john' },
+      } satisfies UserQuery11);
+    expect(res.body).toEqual({
+      user: { name: 'john' },
+    });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+  it('/users/query_11 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_11')
+      .query({
+        user: { name: null },
+      } satisfies UserQuery11);
+    expect(res.body).toEqual({
+      user: { name: null },
     });
     expect(res.status).toBe(200);
     expect(res.body).toMatchSnapshot();

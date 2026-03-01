@@ -76,3 +76,12 @@ export class UserQuery10Part {
 export class UserQuery10 extends OmitType(UserQuery10Part, ['age']) {
   pet: string;
 }
+
+export class User {
+  name?: string;
+}
+
+@OpenApiRegister()
+export class UserQuery11 {
+  user: User;
+}

@@ -164,12 +164,19 @@ export class OpenApiValidator {
       }
 
       if (type == 'object') {
-        val = z.object(
-          mapEntries(prop.properties, (k, v) => [
-            k,
-            this.openapiPropToZod(v, opts.type?.()[k]),
-          ]),
-        );
+        if (!prop.properties) {
+          val = z.record(
+            z.union([z.string(), z.number(), z.boolean(), z.null()]),
+            z.unknown(),
+          );
+        } else {
+          val = z.object(
+            mapEntries(prop.properties, (k, v) => [
+              k,
+              this.openapiPropToZod(v, opts.type?.()[k]),
+            ]),
+          );
+        }
       }
 
       if (prop.format) {
