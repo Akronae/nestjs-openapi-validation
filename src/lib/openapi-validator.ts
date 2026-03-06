@@ -148,22 +148,22 @@ export class OpenApiValidator {
       type = dtoname;
     } else {
       type = prop.type;
-      val = prop.enum
-        ? z.enum(prop.enum)
-        : type in z.coerce
-          ? z.coerce[type]()
-          : type == 'array'
-            ? z.array(this.openapiPropToZod(prop.items, opts))
-            : null;
+      val = z.unknown();
 
-      if (type == 'boolean') {
-        val = z.preprocess(
-          (val) => String(val).toLowerCase() === 'true',
-          z.boolean(),
-        );
-      }
-
-      if (type == 'object') {
+      if (prop.enum) {
+        val = anyTypeEnum(prop.enum, prop.type);
+      } else if (type == 'boolean') {
+        val = z.preprocess((val) => {
+          const s = String(val).toLowerCase();
+          if (s === 'true') return true;
+          if (s === 'false') return false;
+          return val;
+        }, z.boolean());
+      } else if (type in z.coerce) {
+        val = z.coerce[type]();
+      } else if (type == 'array') {
+        val = z.array(this.openapiPropToZod(prop.items, opts));
+      } else if (type == 'object') {
         if (!prop.properties) {
           val = z.record(
             z.union([z.string(), z.number(), z.boolean(), z.null()]),
@@ -215,7 +215,11 @@ export class OpenApiValidator {
     if (!val) {
       return null;
     }
-    if (opts.required === false) val = val.optional();
+    if (opts.required === false)
+      val = z.preprocess(
+        (v) => (v === null || v === 'undefined' ? undefined : v),
+        val.optional(),
+      );
     else val = requiredrefine(val, type);
 
     if (opts.nullable || prop.nullable) {
@@ -269,3 +273,22 @@ const safeString = (schema: z.ZodTypeAny) =>
 
     return val;
   }, schema);
+
+const anyTypeEnum = (
+  values: OpenApiProp['enum'],
+  type: OpenApiProp['type'],
+) => {
+  if (type != 'number') {
+    return z.enum(values as [string, ...string[]]);
+  }
+  return z.preprocess(
+    (val) => {
+      if (typeof val === 'string' && !isNaN(Number(val)) && val.trim() !== '') {
+        const num = Number(val);
+        if (values.includes(num as any)) return num;
+      }
+      return val;
+    },
+    z.union(values.map((v) => z.literal(v)) as any),
+  );
+};

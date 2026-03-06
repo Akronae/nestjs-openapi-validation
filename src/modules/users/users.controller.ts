@@ -61,6 +61,7 @@ export class UsersController {
 
   @Get('query_6')
   getQuery6(@Query() query: UserQuery6) {
+    console.log(query);
     return query;
   }
 

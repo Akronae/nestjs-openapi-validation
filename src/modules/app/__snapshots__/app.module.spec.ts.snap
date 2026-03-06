@@ -1363,6 +1363,15 @@ exports[`AppController (e2e) /response_5 fail (POST) 1`] = `
           ],
           "received": "nan",
         },
+        {
+          "code": "invalid_type",
+          "expected": "boolean",
+          "message": "Required",
+          "path": [
+            "force",
+          ],
+          "received": "undefined",
+        },
       ],
       "name": "ZodError",
     },
@@ -2130,14 +2139,14 @@ exports[`AppController (e2e) /users/query_11 success (GET) 1`] = `
   "user": {
     "name": "john",
   },
+  "vote": 1,
 }
 `;
 
 exports[`AppController (e2e) /users/query_11 success (GET) 2`] = `
 {
-  "user": {
-    "name": null,
-  },
+  "user": {},
+  "vote": -1,
 }
 `;
 
