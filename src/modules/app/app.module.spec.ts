@@ -1110,10 +1110,12 @@ describe('AppController (e2e)', () => {
       .query({
         user: { name: 'john' },
         vote: 1,
+        tags: ['tag1', 'tag2'],
       } satisfies UserQuery11);
     expect(res.body).toEqual({
       user: { name: 'john' },
       vote: 1,
+      tags: ['tag1', 'tag2'],
     });
     expect(res.status).toBe(200);
     expect(res.body).toMatchSnapshot();
@@ -1124,10 +1126,12 @@ describe('AppController (e2e)', () => {
       .query({
         user: { name: null },
         vote: -1,
+        tags: 'tag1' as any,
       } satisfies UserQuery11);
     expect(res.body).toEqual({
       user: { name: undefined },
       vote: -1,
+      tags: ['tag1'],
     });
     expect(res.status).toBe(200);
     expect(res.body).toMatchSnapshot();

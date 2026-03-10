@@ -86,4 +86,5 @@ export class UserQuery11 {
   user: User;
   @ApiProperty({ enum: [1, -1] })
   vote: 1 | -1;
+  tags?: string[];
 }

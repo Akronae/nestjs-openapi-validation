@@ -162,7 +162,10 @@ export class OpenApiValidator {
       } else if (type in z.coerce) {
         val = z.coerce[type]();
       } else if (type == 'array') {
-        val = z.array(this.openapiPropToZod(prop.items, opts));
+        val = z.preprocess(
+          (v) => (Array.isArray(v) ? v : [v]),
+          z.array(this.openapiPropToZod(prop.items, opts)),
+        );
       } else if (type == 'object') {
         if (!prop.properties) {
           val = z.record(

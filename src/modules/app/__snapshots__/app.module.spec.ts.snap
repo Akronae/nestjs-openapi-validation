@@ -2136,6 +2136,10 @@ exports[`AppController (e2e) /users/query_10 success (GET) 1`] = `
 
 exports[`AppController (e2e) /users/query_11 success (GET) 1`] = `
 {
+  "tags": [
+    "tag1",
+    "tag2",
+  ],
   "user": {
     "name": "john",
   },
@@ -2145,6 +2149,9 @@ exports[`AppController (e2e) /users/query_11 success (GET) 1`] = `
 
 exports[`AppController (e2e) /users/query_11 success (GET) 2`] = `
 {
+  "tags": [
+    "tag1",
+  ],
   "user": {},
   "vote": -1,
 }
