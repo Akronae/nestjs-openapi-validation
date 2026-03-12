@@ -74,7 +74,7 @@ export class OpenApiValidator {
   getZodSchema(dtoName: string) {
     if (getIgnoredOpenApiModels().includes(dtoName)) return z.any();
 
-    let tsschema = this.schemata[dtoName];
+    let tsschema = this.schemata[dtoName] ?? {};
     const openapischema = this.openapi.components?.schemas[
       dtoName
     ] as SchemaObject;
@@ -87,7 +87,7 @@ export class OpenApiValidator {
         return [
           k,
           {
-            required: openapischema.required.includes(k),
+            required: openapischema.required?.includes(k) === true,
             type: () => ({ name: (v as SchemaObject).type }),
           },
         ];
@@ -110,7 +110,7 @@ export class OpenApiValidator {
       }),
     });
 
-    return zodSchema;
+    return z.preprocess(parseJsonPreprocessor, zodSchema);
   }
 
   openapiPropToZod(prop: OpenApiProp, opts: Partial<PropType>): ZodType {
