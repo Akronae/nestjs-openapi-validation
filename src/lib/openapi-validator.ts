@@ -2,7 +2,7 @@ import { BadRequestException, Paramtype } from '@nestjs/common';
 import { OpenAPIObject } from '@nestjs/swagger';
 import { SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { mapEntries } from 'radash';
-import z, { ZodSchema, ZodType } from 'zod';
+import z, { ZodIssueCode, ZodSchema, ZodType } from 'zod';
 import { getIgnoredOpenApiModels } from './openapi-ignore.decorator';
 
 type OpenApiProp = {
@@ -144,7 +144,7 @@ export class OpenApiValidator {
 
     if (prop.$ref) {
       const dtoname = prop.$ref.split('/').pop();
-      val = this.getZodSchema(dtoname);
+      val = z.preprocess(parseJsonPreprocessor, this.getZodSchema(dtoname));
       type = dtoname;
     } else {
       type = prop.type;
@@ -232,6 +232,27 @@ export class OpenApiValidator {
     return val as ZodType;
   }
 }
+
+const parseJsonPreprocessor = (value: any, ctx: z.RefinementCtx) => {
+  if (typeof value === 'string') {
+    const trim = value.trim();
+    if (
+      (trim.startsWith('{') && trim.endsWith('}')) ||
+      (trim.startsWith('[') && trim.endsWith(']'))
+    ) {
+      try {
+        return JSON.parse(value);
+      } catch (e) {
+        ctx.addIssue({
+          code: ZodIssueCode.custom,
+          message: (e as Error).message,
+        });
+      }
+    }
+  }
+
+  return value;
+};
 
 const requiredrefine = (x: any, type: string) =>
   x.superRefine((data, ctx) => {

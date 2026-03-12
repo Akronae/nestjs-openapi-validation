@@ -10,6 +10,7 @@ import {
   UserQuery1,
   UserQuery10,
   UserQuery11,
+  UserQuery12,
   UserQuery2,
   UserQuery3,
   UserQuery4,
@@ -1132,6 +1133,19 @@ describe('AppController (e2e)', () => {
       user: { name: undefined },
       vote: -1,
       tags: ['tag1'],
+    });
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchSnapshot();
+  });
+
+  it('/users/query_12 success (GET)', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/v1/users/query_12')
+      .query({
+        deep: JSON.stringify({ info: { name: null, age: 25 } }) as any,
+      } satisfies UserQuery12);
+    expect(res.body).toEqual({
+      deep: { info: { name: undefined, age: 25 } },
     });
     expect(res.status).toBe(200);
     expect(res.body).toMatchSnapshot();

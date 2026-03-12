@@ -88,3 +88,18 @@ export class UserQuery11 {
   vote: 1 | -1;
   tags?: string[];
 }
+
+export class UserQuery12DeepInfo {
+  name?: string;
+  age: number;
+}
+
+export class UserQuery12Deep {
+  info: UserQuery12DeepInfo;
+  info2?: UserQuery12DeepInfo;
+}
+
+@OpenApiRegister()
+export class UserQuery12 {
+  deep: UserQuery12Deep;
+}

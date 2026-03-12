@@ -3,6 +3,7 @@ import {
   UserQuery1,
   UserQuery10,
   UserQuery11,
+  UserQuery12,
   UserQuery2,
   UserQuery3,
   UserQuery4,
@@ -96,6 +97,11 @@ export class UsersController {
     if (!query.user.name) {
       query.user.name = null;
     }
+    return query;
+  }
+
+  @Get('query_12')
+  getQuery12(@Query() query: UserQuery12) {
     return query;
   }
 }
