@@ -99,7 +99,14 @@ export class UserQuery12Deep {
   info2?: UserQuery12DeepInfo;
 }
 
+export enum UserQuery12DeepEnum {
+  A = 1,
+  B = 10,
+  C = 22,
+}
 @OpenApiRegister()
 export class UserQuery12 {
   deep: UserQuery12Deep;
+  @ApiProperty({ enum: UserQuery12DeepEnum })
+  enum: UserQuery12DeepEnum;
 }

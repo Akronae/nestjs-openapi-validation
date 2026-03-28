@@ -26,10 +26,16 @@ type OpenApiProp = {
 type DeepArray<T> = T | DeepArray<T>[];
 
 type PropType<T = { name: string }> = {
-  type: () => DeepArray<T> | Record<string | number, PropType<T>>;
   required: boolean;
   nullable?: boolean;
-};
+} & (
+  | {
+      type: () => DeepArray<T> | Record<string | number, PropType<T>>;
+    }
+  | {
+      enum: Record<string | number, string | number>;
+    }
+);
 
 export class OpenApiValidatorError extends Error {}
 
@@ -176,7 +182,7 @@ export class OpenApiValidator {
           val = z.object(
             mapEntries(prop.properties, (k, v) => [
               k,
-              this.openapiPropToZod(v, opts.type?.()[k]),
+              this.openapiPropToZod(v, 'type' in opts && opts.type?.()[k]),
             ]),
           );
         }

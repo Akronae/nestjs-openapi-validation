@@ -2164,6 +2164,7 @@ exports[`AppController (e2e) /users/query_12 success (GET) 1`] = `
       "age": 25,
     },
   },
+  "enum": 1,
 }
 `;
 

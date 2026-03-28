@@ -11,6 +11,7 @@ import {
   UserQuery10,
   UserQuery11,
   UserQuery12,
+  UserQuery12DeepEnum,
   UserQuery2,
   UserQuery3,
   UserQuery4,
@@ -1143,9 +1144,11 @@ describe('AppController (e2e)', () => {
       .get('/v1/users/query_12')
       .query({
         deep: JSON.stringify({ info: { name: null, age: 25 } }) as any,
+        enum: UserQuery12DeepEnum.A,
       } satisfies UserQuery12);
     expect(res.body).toEqual({
       deep: { info: { name: undefined, age: 25 } },
+      enum: UserQuery12DeepEnum.A,
     });
     expect(res.status).toBe(200);
     expect(res.body).toMatchSnapshot();
