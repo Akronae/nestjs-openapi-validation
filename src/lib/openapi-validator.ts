@@ -2,7 +2,7 @@ import { BadRequestException, Paramtype } from '@nestjs/common';
 import { OpenAPIObject } from '@nestjs/swagger';
 import { SchemaObject } from '@nestjs/swagger/dist/interfaces/open-api-spec.interface';
 import { mapEntries } from 'radash';
-import z, { ZodIssueCode, ZodSchema, ZodType } from 'zod';
+import * as z from 'zod';
 import { getIgnoredOpenApiModels } from './openapi-ignore.decorator';
 
 type OpenApiProp = {
@@ -63,15 +63,20 @@ export class OpenApiValidator {
 
   validate(
     value: any,
-    schema: { dto: string } | ZodSchema,
+    schema: { dto: string } | z.ZodType,
     type: Paramtype | 'response',
   ) {
-    const zodSchema =
-      schema instanceof ZodSchema ? schema : this.getZodSchema(schema.dto);
+    const zodSchema = 'dto' in schema ? this.getZodSchema(schema.dto) : schema;
     const res = zodSchema.safeParse(value);
 
     if (!res.success) {
-      throw new BadRequestException({ error: { [type]: res.error } });
+      throw new BadRequestException({
+        error: {
+          [type]: {
+            issues: res.error.issues,
+          },
+        },
+      });
     }
 
     return res.data;
@@ -119,7 +124,7 @@ export class OpenApiValidator {
     return z.preprocess(parseJsonPreprocessor, zodSchema);
   }
 
-  openapiPropToZod(prop: OpenApiProp, opts: Partial<PropType>): ZodType {
+  openapiPropToZod(prop: OpenApiProp, opts: Partial<PropType>): z.ZodType {
     opts ??= {};
 
     if (prop.oneOf?.length) {
@@ -128,9 +133,9 @@ export class OpenApiValidator {
       }
       return z.union(
         prop.oneOf.map((o) => this.openapiPropToZod(o, { required: true })) as [
-          ZodType,
-          ZodType,
-          ...ZodType[],
+          z.ZodType,
+          z.ZodType,
+          ...z.ZodType[],
         ],
       );
     }
@@ -138,14 +143,16 @@ export class OpenApiValidator {
       if (prop.allOf.length < 2) {
         return this.openapiPropToZod(prop.allOf[0], opts);
       }
-      return z.intersection(
-        ...(prop.allOf.map((o) =>
-          this.openapiPropToZod(o, { required: true }),
-        ) as [ZodType, ZodType, ...ZodType[]]),
+      const schemas = prop.allOf.map((o) =>
+        this.openapiPropToZod(o, { required: true }),
       );
+
+      return schemas
+        .slice(1)
+        .reduce((acc, schema) => z.intersection(acc, schema), schemas[0]);
     }
 
-    let val: ZodType;
+    let val: z.ZodType;
     let type: string;
 
     if (prop.$ref) {
@@ -174,10 +181,7 @@ export class OpenApiValidator {
         );
       } else if (type == 'object') {
         if (!prop.properties) {
-          val = z.record(
-            z.union([z.string(), z.number(), z.boolean(), z.null()]),
-            z.unknown(),
-          );
+          val = z.record(z.string(), z.unknown());
         } else {
           val = z.object(
             mapEntries(prop.properties, (k, v) => [
@@ -235,7 +239,7 @@ export class OpenApiValidator {
       val = z.null().or(val);
     }
 
-    return val as ZodType;
+    return val as z.ZodType;
   }
 }
 
@@ -250,7 +254,7 @@ const parseJsonPreprocessor = (value: any, ctx: z.RefinementCtx) => {
         return JSON.parse(value);
       } catch (e) {
         ctx.addIssue({
-          code: ZodIssueCode.custom,
+          code: 'custom',
           message: (e as Error).message,
         });
       }
@@ -260,13 +264,13 @@ const parseJsonPreprocessor = (value: any, ctx: z.RefinementCtx) => {
   return value;
 };
 
-const requiredrefine = (x: any, type: string) =>
+const requiredrefine = (x: z.ZodType, type: string) =>
   x.superRefine((data, ctx) => {
     if (data == null || data == 'undefined') {
       ctx.addIssue({
-        code: z.ZodIssueCode.invalid_type,
+        code: 'invalid_type',
         expected: type,
-        received: data,
+        input: data,
         message: 'required',
       });
     }
@@ -276,13 +280,15 @@ const safeDate = z.coerce.date().transform((str, ctx) => {
   const date = new Date(str);
   if (!z.date().safeParse(date).success) {
     ctx.addIssue({
-      code: z.ZodIssueCode.invalid_date,
+      code: 'invalid_type',
+      expected: 'date',
+      input: str,
     });
   }
   return date;
 });
 
-const safeString = (schema: z.ZodTypeAny) =>
+const safeString = (schema: z.ZodType) =>
   z.preprocess((val, ctx) => {
     if (typeof val === 'string') return val;
     if (
@@ -294,9 +300,9 @@ const safeString = (schema: z.ZodTypeAny) =>
 
     if (val != null) {
       ctx.addIssue({
-        code: z.ZodIssueCode.invalid_type,
+        code: 'invalid_type',
         expected: 'string',
-        received: typeof val,
+        input: typeof val,
         message: `Expected string, received ${typeof val}`,
       });
     }

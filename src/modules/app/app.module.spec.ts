@@ -1,7 +1,6 @@
 import { INestApplication, VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Test, TestingModule } from '@nestjs/testing';
-import * as request from 'supertest';
 import { getRegisteredOpenApiModels } from '../../lib/openapi-register.decorator';
 import { OpenApiValidationInterceptor } from '../../lib/openapi-validation.interceptor';
 import { OpenApiValidationPipe } from '../../lib/openapi-validation.pipe';
@@ -20,6 +19,8 @@ import { UsersModule } from '../users/users.module';
 import { Query10, Query6, Query7, Query8, Query9 } from './app.dto';
 import { AppModule } from './app.module';
 import { AppService } from './app.service';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+import request = require('supertest');
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
