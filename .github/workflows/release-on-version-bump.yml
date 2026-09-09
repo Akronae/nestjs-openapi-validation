@@ -18,9 +18,8 @@ jobs:
       - run: yarn
       - run: yarn test
       - run: yarn lib:build
-      - run: yarn publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm install -g npm@latest
+      - run: npm publish --provenance --access public
       - uses: Makepad-fr/auto-release-on-version-bump-action@0.0.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
