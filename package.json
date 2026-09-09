@@ -7,6 +7,13 @@
   "files": [
     "lib"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Akronae/nestjs-openapi-validation.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./lib/src/lib/index.js",
   "module": "./lib/src/lib/index.js",
   "types": "./lib/src/lib/index.d.ts",
